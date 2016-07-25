@@ -1,0 +1,13 @@
+{
+  "name": "infinni-ui-tests",
+  "authors": [
+    "InfinnitySolutions <info@infinnity.ru>"
+  ],
+  "license": "GPL",
+  "keywords": [
+    "infinni-ui",
+    "infinnity",
+    "infinnitysolutions"
+  ],
+  "homepage": "https://github.com/InfinniPlatform/InfinniUI-tests"
+}
