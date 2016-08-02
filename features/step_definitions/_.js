@@ -26,7 +26,7 @@ module.exports = function () {
                         try {
                             var diff = that._.difference(linesActual, linesExpected);
 
-                            if(!that._.isArray(diff)) {
+                            if (!that._.isArray(diff)) {
                                 diff = [diff];
                             }
 
@@ -66,7 +66,7 @@ module.exports = function () {
 
         return this.currentView.findElements(xpath)
             .then(function (elements) {
-                if(elements.length < elementName.index + 1) {
+                if (elements.length < elementName.index + 1) {
                     throw new Error('Элемент не найден');
                 }
                 return elements[elementName.index].isDisplayed();
@@ -85,13 +85,50 @@ module.exports = function () {
 
         return this.currentView.findElements(xpath)
             .then(function (elements) {
-                if(elements.length < elementName.index + 1) {
+                if (elements.length < elementName.index + 1) {
                     throw new Error('Элемент не найден');
                 }
                 return elements[elementName.index].isDisplayed();
             })
             .then(function (value) {
                 that.assert.equal(value, false);
+            });
+    });
+
+    this.When(/^я нажму на клавишу "([^"]*)"$/, function (key) {
+        var keys = {
+            'enter': this.keys.ENTER
+        };
+
+        key = keys[key.toLowerCase()];
+
+        if (!key) {
+            throw new Error('Неизвестная клавиша');
+        }
+
+        return this.driver.switchTo().activeElement()
+            .then(function (element) {
+                return element.sendKeys(key);
+            });
+    });
+
+    this.When(/^я увижу элемент "([^"]*)" с текстом "([^"]*)"$/, function (elementName, text) {
+        elementName = this.helpers.parseElement(elementName);
+        text = text.replace(/''/g, '"');
+
+        var selector = this.selectors.XPATH.Element.byName(elementName.name);
+        var xpath = this.by.xpath(selector);
+        var that = this;
+
+        return this.currentView.findElements(xpath)
+            .then(function (elements) {
+                if (elements.length < elementName.index + 1) {
+                    throw new Error('Элемент не найден');
+                }
+                return elements[elementName.index].getText();
+            })
+            .then(function (elementText) {
+                that.assert.equal(elementText, text);
             });
     });
 };
