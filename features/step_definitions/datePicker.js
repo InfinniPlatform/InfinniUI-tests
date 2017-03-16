@@ -54,7 +54,7 @@ module.exports = function() {
             });
     });
 
-    this.When(/^я очищу поле типа дата "([^"]*)"$/, function(datePickerLabel) {
+    this.When(/^я очищу поле типа дата "([^"]*)"$/, function(pickerText) {
         var picker = this.helpers.parseElement(pickerText);
 
         var selector = this.selectors.XPATH.DatePicker.caption(picker.name);
