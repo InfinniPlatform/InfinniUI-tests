@@ -1,13 +1,16 @@
 'use strict';
 
-var fs = require('fs');
-var webdriver = require('selenium-webdriver');
-var selectors = require('../../helpers/selectors.js');
-var args = require('../../helpers/arguments.js')(process.argv.slice(2));
-var helpers = require('../../helpers/helpers.js');
-var chai = require('chai');
-var underscore = require('underscore');
-var config = require('./config.json');
+var fs = require( 'fs' );
+var webdriver = require( 'selenium-webdriver' );
+var chai = require( 'chai' );
+var underscore = require( 'underscore' );
+var args = require( '../../helpers/arguments.js' )( process.argv.slice( 2 ) );
+var selectors = require( '../../helpers/selectors.js' );
+var helpers = require( '../../helpers/helpers.js' );
+var config = require( '../../config.js' );
+
+var By = webdriver.By;
+var until = webdriver.until;
 
 var capabilities = {
     chrome: function() {
@@ -16,8 +19,8 @@ var capabilities = {
     phantomjs: function() {
         var caps = webdriver.Capabilities.phantomjs();
 
-        if (args.phantomjs) {
-            caps.set('phantomjs.binary.path', args.phantomjs);
+        if( args.phantomjs ) {
+            caps.set( 'phantomjs.binary.path', args.phantomjs );
         }
 
         return caps;
@@ -26,79 +29,100 @@ var capabilities = {
 
 var buildChromeDriver = function() {
     return new webdriver.Builder()
-        .withCapabilities(capabilities.chrome())
+        .withCapabilities( capabilities.chrome() )
         .build();
 };
 
 var buildFirefoxDriver = function() {
-    var firefox = require('selenium-webdriver/firefox');
-    var profile = new firefox.Profile('C:\\firefoxProfile');
-    var options = new firefox.Options().setProfile(profile);
+    var firefox = require( 'selenium-webdriver/firefox' );
+    var profile = new firefox.Profile( 'C:\\firefoxProfile' );
+    var options = new firefox.Options().setProfile( profile );
 
-    return new firefox.Driver(options);
+    return new firefox.Driver( options );
 };
 
 var buildPhantomDriver = function() {
     return new webdriver.Builder()
-        .withCapabilities(capabilities.phantomjs())
+        .withCapabilities( capabilities.phantomjs() )
         .build();
 };
 
-var driver;
-
-(function buildDriver(platform) {
-    switch (platform) {
+var setOptionsForDriver = function( driver, browserName ) {
+    switch( browserName ) {
         case 'chrome':
-            driver = buildChromeDriver();
+            driver.setChromeOptions(); // add options params
             break;
         case 'firefox':
-            driver = buildFirefoxDriver();
+            driver.setFirefoxOptions();
+            break;
+        case 'opera':
+            driver.setOperaOptions();
+            break;
+        case 'edge':
+            driver.setEdgeOptions();
+            break;
+        case 'ie':
+            driver.setIeOptions();
+            break;
+        case 'safari':
+            driver.setSafariOptions();
             break;
         case 'phantomjs':
-            driver = buildPhantomDriver();
             break;
         default:
-            if (args.platform) {
-                throw new Error('Invalid platform "' + (args.platform || '') + '"');
+            if( browserName ) {
+                throw new Error( 'Invalid platform ' + ( browserName || '' ) + '' );
             } else {
-                buildDriver(config.browser.platform);
+                return setOptionsForDriver( driver, config.defaultBrowserName );
             }
     }
-})(args.platform);
+
+    return driver;
+};
+
+var buildDriver = function( browserName ) {
+    var driver = new webdriver.Builder().forBrowser( browserName, config.browsers[ browserName ].version );
+
+    driver = setOptionsForDriver( driver, browserName );
+    driver.build();
+
+    return driver;
+};
 
 var getDriver = function() {
     return driver;
 };
 
-var World = function World() {
-    var screenshotPath = "screenshots";
+var World = function() {
+    var screenshotPath = 'screenshots';
 
     this.webdriver = webdriver;
     this.driver = driver;
-    this.by = webdriver.By;
+    this.by = By;
     this.selectors = selectors;
     this.helpers = helpers;
     this.assert = chai.assert;
     this._ = underscore;
     this.keys = webdriver.Key;
-    this.selectAll = this.keys.chord(this.keys.CONTROL, 'a');
-
+    this.selectAll = this.keys.chord( this.keys.CONTROL, 'a' );
     this.currentView = null;
 
-    this.driver.manage().timeouts().implicitlyWait(config.timeouts.main);
+    this.driver.manage().setTimeouts( undefined, undefined, config.timeouts.main );
 
-    if (!args.teamcity && !args.width && !args.height) {
+    if( !args.teamcity && !args.width && !args.height ) {
         this.driver.manage().window().maximize();
     } else {
-        var width = args.width ? parseInt(args.width, 10) : config.screen.width;
-        var height = args.height ? parseInt(args.height, 10) : config.screen.height;
-        this.driver.manage().window().setSize(width, height);
+        var width = args.width ? parseInt( args.width, 10 ) : config.screen.width;
+        var height = args.height ? parseInt( args.height, 10 ) : config.screen.height;
+        this.driver.manage().window().setSize( width, height );
     }
 
-    if (!fs.existsSync(screenshotPath)) {
-        fs.mkdirSync(screenshotPath);
+    if( !fs.existsSync( screenshotPath ) ) {
+        fs.mkdirSync( screenshotPath );
     }
 };
+
+var driver = buildDriver( args.platform );
 
 module.exports.World = World;
 module.exports.getDriver = getDriver;

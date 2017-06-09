@@ -1,0 +1,20 @@
+{
+  "jetBrainsSMListener": {
+    "stepResult": {
+      "testStarted": "##teamcity[testStarted timestamp = '%s' locationHint = 'file:///%s' captureStandardOutput = 'true' name = 'Step: %s']\n",
+      "testIgnored": "##teamcity[testIgnored name = 'Step: %s' message = 'Skipped step' timestamp = '%s']\n",
+      "testFailed1": "##teamcity[testFailed timestamp = '%s' details = ' message = 'Undefined step: %s' name = 'Step: %s' error = 'true']\n",
+      "testFailed2": "##teamcity[testFailed timestamp = '%s' details = '%s' message = '%s' name = 'Step: %s']\n",
+      "customProgressStatus1": "##teamcity[customProgressStatus timestamp='%s' type='testFailed']\n",
+      "testFinished": "##teamcity[testFinished timestamp = '%s' diagnosticInfo = 'cucumber  f/s=(1344855950447, 1344855950447), duration=0, time.now=%s' duration = '0' name = 'Step: %s']\n",
+      "enteredTheMatrix": "##teamcity[enteredTheMatrix timestamp = '%s']\n",
+      "customProgressStatus2": "##teamcity[customProgressStatus testsCategory = 'Scenarios' count = '0' timestamp = '%s']\n",
+      "testSuiteStarted1": "##teamcity[testSuiteStarted timestamp = '%s' locationHint = 'file:///%s' name = 'Feature: %s']\n",
+      "testSuiteFinished1": "##teamcity[testSuiteFinished timestamp = '%s' name = 'Feature: %s']\n",
+      "customProgressStatus3": "##teamcity[customProgressStatus type = 'testStarted' timestamp = '%s']\n",
+      "testSuiteStarted2": "##teamcity[testSuiteStarted timestamp = '%s' locationHint = 'file:///%s' name = 'Scenario: %s']\n",
+      "testSuiteFinished2": "##teamcity[testSuiteFinished timestamp = '%s' name = 'Scenario: %s']\n",
+      "customProgressStatus4": "##teamcity[customProgressStatus testsCategory = ' count = '0' timestamp = '%s']\n"
+    }
+  }
+}
