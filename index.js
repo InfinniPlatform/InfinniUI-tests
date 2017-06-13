@@ -1,4 +1,3 @@
-var _ = require( 'underscore' );
 var defaultConfig = require( './config' );
 var customConfig;
 var cliConfig;

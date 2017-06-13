@@ -34,13 +34,13 @@ var myHooks = function() {
         var attempt = 0;
         var totalAttempts = 60;
 
-        driver.manage().setTimeouts( undefined, undefined, config.timeouts.wait );
+        driver.manage().setTimeouts( undefined, undefined, process.myConfig.timeouts.wait );
 
         ( function tryContinue( i ) {
             driver.findElements( by.xpath( './/div[contains(@class, "blockPage")]' ) )
                 .then( function( elements ) {
                     if( !elements.length ) {
-                        driver.manage().setTimeouts( undefined, undefined, config.timeouts.main );
+                        driver.manage().setTimeouts( undefined, undefined, process.myConfig.timeouts.main );
                         callback();
                     } else {
                         if( i < totalAttempts ) {

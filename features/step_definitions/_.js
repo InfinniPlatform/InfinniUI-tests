@@ -1,7 +1,5 @@
 'use strict';
 
-var config = require( '../../config' );
-
 module.exports = function() {
     this.World = require( '../support/world.js' ).World;
 
@@ -58,7 +56,7 @@ module.exports = function() {
 
         return driver.findElements( xpath )
             .then( function( msgs ) {
-                driver.manage().setTimeouts( undefined, undefined, config.timeouts.main );
+                driver.manage().setTimeouts( undefined, undefined, process.myConfig.timeouts.main );
                 if( msgs.length != 0 ) {
                     throw new Error( 'Найдено ' + msgs.length + ' сообщений' );
                 }
