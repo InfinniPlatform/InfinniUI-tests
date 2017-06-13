@@ -1,3 +1,4 @@
+var path = require( 'path' );
 
 module.exports = {
     timeouts: {
@@ -27,6 +28,16 @@ module.exports = {
         },
         safari: {
 
+        },
+        phantomjs: {
+            // binaryPath: 'some_path'
         }
+    },
+    options: {
+        folder: [
+            path.resolve( __dirname, 'features' )
+        ],
+        '--tags': '~@ignore',
+        '--format': 'summary'
     }
 };

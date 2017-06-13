@@ -4,6 +4,7 @@
     "chai": "^4.0.2",
     "cucumber": "^2.3.0",
     "node-xlsx": "^0.7.4",
+    "npm": "^5.0.3",
     "sanitize-filename": "^1.6.1",
     "selenium-webdriver": "^3.4.0",
     "translitit-cyrillic-russian-to-latin": "^0.1.1",
@@ -11,7 +12,7 @@
     "unzip": "^0.1.11"
   },
   "scripts": {
-    "test": "node node_modules/cucumber/bin/cucumber.js \"C:\\projects\\2017\\InfinniUI-tests\\additionalSteps\" --tags ~@ignore --format summary --blabla foo"
+    "test": "node node_modules/cucumber/bin/cucumber.js --tags ~@ignore --format summary --platform:firefox"
   },
   "devDependencies": {
     "eslint": "^3.19.0",

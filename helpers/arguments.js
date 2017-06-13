@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ *
+ * @param argv
+ * @returns {*}
+ */
 module.exports = function( argv ) {
     var result = {};
 

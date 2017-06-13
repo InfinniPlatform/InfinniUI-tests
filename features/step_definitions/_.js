@@ -39,7 +39,7 @@ module.exports = function() {
                             reject( err );
                         }
 
-                        if( i == msgs.length - 1 ) {
+                        if( i === msgs.length - 1 ) {
                             that.driver.executeScript( '$("#toast-container").remove();' );
                             resolve();
                         }
@@ -54,11 +54,11 @@ module.exports = function() {
         var xpath = this.by.xpath( selector );
         var driver = this.driver;
 
-        driver.manage().timeouts().implicitlyWait( 4500 );
+        driver.manage().setTimeouts( undefined, undefined, 4500 );
 
-        return this.driver.findElements( xpath )
+        return driver.findElements( xpath )
             .then( function( msgs ) {
-                that.driver.manage().timeouts().implicitlyWait( config.timeouts.main );
+                driver.manage().setTimeouts( undefined, undefined, config.timeouts.main );
                 if( msgs.length != 0 ) {
                     throw new Error( 'Найдено ' + msgs.length + ' сообщений' );
                 }

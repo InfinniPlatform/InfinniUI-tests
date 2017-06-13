@@ -125,11 +125,134 @@ var format = function( text, args ) {
     } );
 };
 
+
+/**
+ *
+ * @param string
+ * @returns {string}
+ */
+var modifyString = function( string ) {
+    return string
+        .replace( /\|/g, '||' )
+        .replace( /\[/g, '|[' )
+        .replace( /\]/g, '|]' )
+        .replace( /\r/g, '|r' )
+        .replace( /\n/g, '|n' )
+        .replace( /'/g, '|' );
+};
+
+/**
+ *
+ * @param string
+ * @returns {string}
+ */
+var replaceInOrder = function( string ) {
+    var args = Array.prototype.slice( arguments );
+    var modifiedStr = string;
+
+    for( var i = 1, ii = args.length; i < ii; i += 1 ) {
+        modifiedStr = modifiedStr.replace( '%s', args[ i ] );
+    }
+
+    return modifiedStr;
+};
+
+/**
+ *
+ */
+var fillStringAndWrite = function() {
+    var message = replaceInOrder( arguments );
+
+    write( message );
+};
+
+/**
+ *
+ * @param func
+ */
+var asyncCall = function( func ) {
+    setTimeout( function() {
+        if( typeof func === 'function' ) {
+            func();
+        }
+    }, 0 );
+};
+
+/**
+ *
+ * @param string
+ * @returns {*}
+ */
+var escapeForTeamCity = function( string ) {
+    if( !string ) {
+        return string;
+    }
+
+    return modifyString( string );
+};
+
+/**
+ *
+ * @param message
+ */
+var write = function( message ) {
+    message += '\n';
+    fs.writeSync( 1, message );
+    fs.fsyncSync( 1 );
+};
+
+/**
+ *
+ * @param message
+ */
+var logError = function( message ) {
+    process.stderr.write( message );
+};
+
+/**
+ *
+ * @param message
+ */
+var log = function( message ) {
+    process.stdout.write( message );
+};
+
+/**
+ *
+ * @param step
+ */
+var fixStepResult = function( step ) {
+    step.isPending = function() {
+        return this.getStatus() == 'pending';
+    };
+    step.isSkipped = function() {
+        return this.getStatus() == 'skipped';
+    };
+    step.isUndefined = function() {
+        return this.getStatus() == 'undefined';
+    };
+    step.isFailed = function() {
+        return this.getStatus() == 'failed';
+    };
+    step.isSuccessful = function() {
+        return this.getStatus() == 'successful';
+    };
+};
+
 module.exports = {
     parseElement: parseElement,
     parseDate: parseDate,
     fixQuotes: fixQuotes,
     ignoreNumbers: ignoreNumbers,
     ignoreDates: ignoreDates,
-    format: format
+    format: format,
+    modifyString: modifyString,
+    replaceInOrder: replaceInOrder,
+    fillStringAndWrite: fillStringAndWrite,
+    asyncCall: asyncCall,
+    escapeForTeamCity: escapeForTeamCity,
+    write: write,
+    fixStepResult: fixStepResult,
+    log: log,
+    logError: logError
 };
