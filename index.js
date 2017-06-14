@@ -8,7 +8,7 @@ var cliConfig = {};
 
 var addCustomConfigFile = function( param ) {
     try {
-        customConfig = require( param.slice( configFileOpt.length ) );
+        customConfig = require( '../..' + param.slice( configFileOpt.length ) );
     } catch ( e ) {
         console.error( e );
     }
@@ -53,7 +53,7 @@ var merge = function( dest, source ) {
             var paramDest = dest[ key ];
 
             if( Array.isArray( paramSrc ) ) {
-                for( var i = 0, ii = paramSrc; i < ii; i += 1 ) {
+                for( var i = 0, ii = paramSrc.length; i < ii; i += 1 ) {
                     if( paramDest.indexOf( paramSrc[ i ] ) === -1 ) {
                         paramDest.push( paramSrc[ i ] );
                     }
@@ -85,20 +85,19 @@ var fillArgv = function( mergedConfig ) {
     }
 };
 
-var overrideMergedByCliConfig = function( mergedConfig ) {
-    for( var key in cliConfig ) {
-        if( cliConfig.hasOwnProperty( key ) ) {
-            mergedConfig.options[ key ] = cliConfig[ key ];
+var overrideProps = function( dest, source ) {
+    for( var key in source ) {
+        if( source.hasOwnProperty( key ) ) {
+            dest[ key ] = source[ key ];
         }
     }
-
-    mergedConfig.userOptions = userArgs;
 };
 
 var buildConfig = function() {
     var mergedConfig = merge( defaultConfig, customConfig );
 
-    overrideMergedByCliConfig( mergedConfig );
+    overrideProps( mergedConfig.options, cliConfig );
+    overrideProps( mergedConfig.userOptions, userArgs );
     fillArgv( mergedConfig );
 
     // add config to global variable
@@ -106,13 +105,7 @@ var buildConfig = function() {
 };
 
 var startTests = function() {
-    var npm = require( 'npm' );
-    var cucumber = require( './node_modules/cucumber/bin/cucumber' );
-    console.log( 'process.argv -> ', process.argv );
-    console.log( '\n\n' );
-    console.log( 'process.myConfig -> ', process.myConfig );
-    console.log( '\n\n' );
-    npm.load( cucumber );
+    require( 'cucumber/bin/cucumber' );
 };
 
 parseArgvs();

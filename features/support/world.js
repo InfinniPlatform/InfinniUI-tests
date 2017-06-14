@@ -141,7 +141,7 @@ var World = function() {
     }
 };
 
-var driver = buildDriver( config.userOptions.platform || config.defaultBrowserName );
+var driver = buildDriver( config.userOptions.browser || config.defaultBrowserName );
 
 module.exports.World = World;
 module.exports.getDriver = getDriver;

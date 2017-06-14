@@ -45,11 +45,11 @@ module.exports = {
     ],
 
     // path to extension file
-    extension: undefined,
+    extension: '',
 
     // all user options goes here
     userOptions: {
-        // platform: 'platform_name',
+        // browser: 'browser_name',
         // teamcity: true,
         // width: 'some_width',
         // height: 'some_height',
