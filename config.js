@@ -57,7 +57,7 @@ module.exports = {
 
     // all cucumber options goes here
     options: {
-        '--tags': '~@ignore',
+        '--tags': 'not @ignore',
         '--format': 'summary'
     }
 

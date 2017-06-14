@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я удалю прикрепленный файл из поля "([^"]*)"$/, function( fileBoxName ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я удалю прикрепленный файл из поля "([^"]*)"$/, function( fileBoxName ) {
         fileBoxName = this.helpers.parseElement( fileBoxName );
 
         var selector = this.selectors.XPATH.FileBox.caption( fileBoxName.name );
@@ -24,4 +25,5 @@ module.exports = function() {
                 return button.click();
             } );
     } );
-};
+
+} );

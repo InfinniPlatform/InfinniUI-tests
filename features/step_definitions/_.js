@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.Then( /^система отобразит список валидационных сообщений: (.*?)$/, function( messages ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.Then( /^система отобразит список валидационных сообщений: (.*?)$/, function( messages ) {
         var selector = this.selectors.XPATH.Toastr.messages();
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -47,7 +48,7 @@ module.exports = function() {
         } );
     } );
 
-    this.Then( /^система не отобразит валидационных сообщений$/, function() {
+    consumer.Then( /^система не отобразит валидационных сообщений$/, function() {
         var selector = this.selectors.XPATH.Toastr.messages();
         var xpath = this.by.xpath( selector );
         var driver = this.driver;
@@ -63,7 +64,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я увижу элемент "([^"]*)"$/, function( elementName ) {
+    consumer.When( /^я увижу элемент "([^"]*)"$/, function( elementName ) {
         elementName = this.helpers.parseElement( elementName );
 
         var selector = this.selectors.XPATH.Element.byName( elementName.name );
@@ -82,7 +83,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я не увижу элемент "([^"]*)"$/, function( elementName ) {
+    consumer.When( /^я не увижу элемент "([^"]*)"$/, function( elementName ) {
         elementName = this.helpers.parseElement( elementName );
 
         var selector = this.selectors.XPATH.Element.byName( elementName.name );
@@ -101,7 +102,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я нажму на клавишу "([^"]*)"$/, function( key ) {
+    consumer.When( /^я нажму на клавишу "([^"]*)"$/, function( key ) {
         var keys = this._.map( key.split( '+' ), function( k ) {
             return this.keys[ k.trim().toUpperCase() ];
         }.bind( this ) );
@@ -112,7 +113,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я увижу элемент "([^"]*)" с текстом "([^"]*)"$/, function( elementName, text ) {
+    consumer.When( /^я увижу элемент "([^"]*)" с текстом "([^"]*)"$/, function( elementName, text ) {
         elementName = this.helpers.parseElement( elementName );
         text = text.replace( /''/g, '"' );
 
@@ -133,7 +134,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^элемент "([^"]*)" будет недоступным$/, function( elementName ) {
+    consumer.When( /^элемент "([^"]*)" будет недоступным$/, function( elementName ) {
         elementName = this.helpers.parseElement( elementName );
 
         var selector = this.selectors.XPATH.Element.byName( elementName.name );
@@ -157,7 +158,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я нажму на элемент "([^"]*)"$/, function( elementName ) {
+    consumer.When( /^я нажму на элемент "([^"]*)"$/, function( elementName ) {
         elementName = this.helpers.parseElement( elementName );
 
         var selector = this.selectors.XPATH.Element.byName( elementName.name );
@@ -172,9 +173,10 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^выполнится задержка на "([^"]*)" секунд$/, function( time ) {
+    consumer.When( /^выполнится задержка на "([^"]*)" секунд$/, function( time ) {
         return new Promise( function( resolve ) {
             setTimeout( resolve, parseInt( time, 10 ) * 1000 );
         } );
     } );
-};
+
+} );

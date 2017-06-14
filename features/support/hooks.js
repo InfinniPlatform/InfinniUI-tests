@@ -2,14 +2,12 @@
 
 var fs = require( 'fs' );
 var path = require( 'path' );
+var cucumber = require( 'cucumber' );
 var sanitize = require( 'sanitize-filename' );
-var world = require( './world' );
-var driver = world.getDriver();
-var by = world.By;
 
-var myHooks = function() {
+cucumber.defineSupportCode( function( consumer ) {
 
-    this.After( function( scenario ) {
+    consumer.After( function( scenario, callback ) {
         if( scenario.isFailed() ) {
             this.driver.takeScreenshot().then( function( data ) {
                 var base64Data = data.replace( /^data:image\/png;base64,/, '' );
@@ -26,16 +24,20 @@ var myHooks = function() {
         return this.driver.manage().deleteAllCookies();
     } );
 
-    this.registerHandler( 'AfterFeatures', function( event ) {
-        return driver.quit();
+    consumer.registerHandler( 'AfterFeatures', function( feature, callback ) {
+        return this.driver.quit();
     } );
 
-    this.registerHandler( 'BeforeStep', function( step, callback ) {
+    consumer.registerHandler( 'BeforeStep', function( step, callback ) {
         var totalAttempts = 60;
+        var driver = this.driver;
+        var by = this.by;
 
         driver.manage().setTimeouts( undefined, undefined, process.myConfig.timeouts.wait );
 
-        ( function tryContinue( i ) {
+        tryContinue( 0 );
+
+        function tryContinue( i ) {
             driver.findElements( by.xpath( './/div[contains(@class, "blockPage")]' ) )
                 .then( function( elements ) {
                     if( !elements.length ) {
@@ -51,7 +53,7 @@ var myHooks = function() {
                         }
                     }
                 } );
-        } )( 0 );
+        }
     } );
 
     try {
@@ -59,6 +61,5 @@ var myHooks = function() {
     } catch( err ) {
         console.log( 'Extensions not found' );
     }
-};
 
-module.exports = myHooks;
+} );

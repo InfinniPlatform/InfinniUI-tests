@@ -1,30 +1,31 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.Given( /^я нахожусь на экране "([^"]*)"$/, function( viewName ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.Given( /^я нахожусь на экране "([^"]*)"$/, function( viewName ) {
         var that = this;
         return this.driver.findElement( this.by.xpath( this.selectors.XPATH.View.self( viewName ) ) ).then( function( element ) {
             that.currentView = element;
         } );
     } );
 
-    this.Then( /^система отобразит экран "([^"]*)"$/, function( viewName ) {
+    consumer.Then( /^система отобразит экран "([^"]*)"$/, function( viewName ) {
         var that = this;
         return this.driver.findElement( this.by.xpath( this.selectors.XPATH.View.self( viewName ) ) ).then( function( element ) {
             that.currentView = element;
         } );
     } );
 
-    this.Then( /^система отобразит модальное окно "([^"]*)"$/, function( viewName ) {
+    consumer.Then( /^система отобразит модальное окно "([^"]*)"$/, function( viewName ) {
         var that = this;
         return this.driver.findElement( this.by.xpath( this.selectors.XPATH.ModalView.header( viewName ) ) ).then( function( element ) {
             that.currentView = element;
         } );
     } );
 
-    this.When( /^я закрою текущее модальное окно$/, function() {
+    consumer.When( /^я закрою текущее модальное окно$/, function() {
         var selector = this.selectors.XPATH.ModalView.closeButton();
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -36,7 +37,7 @@ module.exports = function() {
             } );
     } );
 
-    this.Then( /^система отобразит окно-сообщение "([^"]*)"$/, function( message ) {
+    consumer.Then( /^система отобразит окно-сообщение "([^"]*)"$/, function( message ) {
         var selector = this.selectors.XPATH.ModalView.message();
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -61,7 +62,7 @@ module.exports = function() {
         } );
     } );
 
-    this.When( /^я нажму в окне-сообщении на кнопку "([^"]*)"$/, function( buttonText ) {
+    consumer.When( /^я нажму в окне-сообщении на кнопку "([^"]*)"$/, function( buttonText ) {
         var selector = this.selectors.XPATH.ModalView.messageBoxButton( buttonText );
         var xpath = this.by.xpath( selector );
 
@@ -73,4 +74,5 @@ module.exports = function() {
                 } );
             } );
     } );
-};
+
+} );

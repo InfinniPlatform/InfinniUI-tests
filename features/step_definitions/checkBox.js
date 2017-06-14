@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я поменяю значение флага "([^"]*)"$/, function( checkBoxName ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я поменяю значение флага "([^"]*)"$/, function( checkBoxName ) {
         checkBoxName = this.helpers.parseElement( checkBoxName );
 
         var selector = this.selectors.XPATH.CheckBox.self( checkBoxName.name );
@@ -18,7 +19,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^флаг "([^"]*)" будет иметь значение "([^"]*)"$/, function( checkBoxName, value ) {
+    consumer.When( /^флаг "([^"]*)" будет иметь значение "([^"]*)"$/, function( checkBoxName, value ) {
         checkBoxName = this.helpers.parseElement( checkBoxName );
         value = JSON.parse( value );
 
@@ -37,4 +38,5 @@ module.exports = function() {
                 that.assert.equal( actualValue, value );
             } );
     } );
-};
+
+} );

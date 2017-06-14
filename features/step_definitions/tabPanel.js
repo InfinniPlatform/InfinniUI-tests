@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я выберу вкладку "([^"]*)" на панели "([^"]*)"$/, function( tabPageLabel, panelName ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я выберу вкладку "([^"]*)" на панели "([^"]*)"$/, function( tabPageLabel, panelName ) {
         var selector = this.selectors.XPATH.TabPanel.page( panelName, tabPageLabel );
         var xpath = this.by.xpath( selector );
 
@@ -12,4 +13,5 @@ module.exports = function() {
                 return button.click();
             } );
     } );
-};
+
+} );

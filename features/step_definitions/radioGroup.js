@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я выберу вариант "([^"]*)" в радиогруппе "([^"]*)"$/, function( variantText, radioGroupName ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я выберу вариант "([^"]*)" в радиогруппе "([^"]*)"$/, function( variantText, radioGroupName ) {
         var radioGroup = this.helpers.parseElement( radioGroupName );
         var selector = this.selectors.XPATH.RadioGroup.item( radioGroup.name, variantText );
         var xpath = this.by.xpath( selector );
@@ -16,4 +17,5 @@ module.exports = function() {
                 return elements[ radioGroup.index ].click();
             } );
     } );
-};
+
+} );

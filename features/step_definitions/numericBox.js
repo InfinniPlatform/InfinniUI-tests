@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^значение в числовом поле "([^"]*)" равно "([^"]*)"$/, function( fieldLabel, value ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^значение в числовом поле "([^"]*)" равно "([^"]*)"$/, function( fieldLabel, value ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );
 
         var selector = this.selectors.XPATH.NumericBox.caption( fieldLabel.name );
@@ -25,7 +26,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я введу в числовое поле "([^"]*)" значение "([^"]*)"$/, function( fieldLabel, value ) {
+    consumer.When( /^я введу в числовое поле "([^"]*)" значение "([^"]*)"$/, function( fieldLabel, value ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );
 
         var selector = this.selectors.XPATH.NumericBox.caption( fieldLabel.name );
@@ -44,7 +45,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я увеличу значение в числовом поле "([^"]*)"$/, function( fieldLabel ) {
+    consumer.When( /^я увеличу значение в числовом поле "([^"]*)"$/, function( fieldLabel ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );
 
         var selector = this.selectors.XPATH.NumericBox.maxButton( fieldLabel.name );
@@ -57,7 +58,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я уменьшу значение в числовом поле "([^"]*)"$/, function( fieldLabel ) {
+    consumer.When( /^я уменьшу значение в числовом поле "([^"]*)"$/, function( fieldLabel ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );
 
         var selector = this.selectors.XPATH.NumericBox.minButton( fieldLabel.name );
@@ -69,4 +70,5 @@ module.exports = function() {
                 return minButtons[ fieldLabel.index ].click();
             } );
     } );
-};
+
+} );

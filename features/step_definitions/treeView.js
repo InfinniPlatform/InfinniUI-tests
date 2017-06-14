@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я раскрою\\закрою в дереве "([^"]*)" элемент "([^"]*)"$/, function( treeViewName, elementText ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я раскрою\\закрою в дереве "([^"]*)" элемент "([^"]*)"$/, function( treeViewName, elementText ) {
         var selector = this.selectors.XPATH.TreeView.name( treeViewName );
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -26,7 +27,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я нажму в дереве "([^"]*)" на элемент "([^"]*)"$/, function( treeViewName, elementText ) {
+    consumer.When( /^я нажму в дереве "([^"]*)" на элемент "([^"]*)"$/, function( treeViewName, elementText ) {
         var selector = this.selectors.XPATH.TreeView.name( treeViewName );
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -42,4 +43,5 @@ module.exports = function() {
                 return node.click();
             } );
     } );
-};
+
+} );

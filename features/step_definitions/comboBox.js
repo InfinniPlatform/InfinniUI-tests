@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я выберу в выпадающем списке "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, value ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я выберу в выпадающем списке "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = this.helpers.fixQuotes( value );
@@ -24,7 +25,7 @@ module.exports = function() {
         } );
     } );
 
-    this.When( /^я выберу в выпадающем списке "([^"]*)" с фильтром "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, filter, value ) {
+    consumer.When( /^я выберу в выпадающем списке "([^"]*)" с фильтром "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, filter, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = this.helpers.fixQuotes( value );
@@ -63,7 +64,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^значение в выпадающем списке "([^"]*)" равно "([^"]*)"$/, function( comboBoxLabel, value ) {
+    consumer.When( /^значение в выпадающем списке "([^"]*)" равно "([^"]*)"$/, function( comboBoxLabel, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = value.replace( /''/g, '"' );
@@ -88,7 +89,7 @@ module.exports = function() {
         } );
     } );
 
-    this.When( /^я очищу выпадающий список "([^"]*)"$/, function( comboBoxLabel ) {
+    consumer.When( /^я очищу выпадающий список "([^"]*)"$/, function( comboBoxLabel ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
 
@@ -104,4 +105,5 @@ module.exports = function() {
                 throw new Error( 'Элемент не найден' );
             } );
     } );
-};
+
+} );

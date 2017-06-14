@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я введу в текстовое поле "([^"]*)" значение "([^"]*)"$/, function( fieldName, value ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я введу в текстовое поле "([^"]*)" значение "([^"]*)"$/, function( fieldName, value ) {
         value = value.replace( /''/g, '"' );
         fieldName = this.helpers.parseElement( fieldName );
 
@@ -20,7 +21,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^значение в текстовом поле "([^"]*)" равно "([^"]*)"$/, function( textBoxLabel, value ) {
+    consumer.When( /^значение в текстовом поле "([^"]*)" равно "([^"]*)"$/, function( textBoxLabel, value ) {
         textBoxLabel = this.helpers.parseElement( textBoxLabel );
         value = value.replace( /''/g, '"' );
 
@@ -39,4 +40,5 @@ module.exports = function() {
                 that.assert.equal( actualValue, value );
             } );
     } );
-};
+
+} );

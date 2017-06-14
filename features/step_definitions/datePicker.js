@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я введу в поле типа дата "([^"]*)" значение "([^"]*)"$/, function( pickerText, date ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я введу в поле типа дата "([^"]*)" значение "([^"]*)"$/, function( pickerText, date ) {
         var picker = this.helpers.parseElement( pickerText );
 
         var selector = this.selectors.XPATH.DatePicker.caption( picker.name );
@@ -27,7 +28,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^значение в поле типа дата "([^"]*)" равно "([^"]*)"$/, function( pickerText, date ) {
+    consumer.When( /^значение в поле типа дата "([^"]*)" равно "([^"]*)"$/, function( pickerText, date ) {
         var picker = this.helpers.parseElement( pickerText );
 
         var selector = this.selectors.XPATH.DatePicker.caption( picker.name );
@@ -54,7 +55,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я очищу поле типа дата "([^"]*)"$/, function( pickerText ) {
+    consumer.When( /^я очищу поле типа дата "([^"]*)"$/, function( pickerText ) {
         var picker = this.helpers.parseElement( pickerText );
 
         var selector = this.selectors.XPATH.DatePicker.caption( picker.name );
@@ -75,4 +76,5 @@ module.exports = function() {
                 return input.sendKeys( that.selectAll, that.keys.BACK_SPACE );
             } );
     } );
-};
+
+} );

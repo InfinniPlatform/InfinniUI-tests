@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require( '../support/world' ).World;
+var cucumber = require( 'cucumber' );
 
-    this.When( /^я нажму на кнопку "([^"]*)"$/, function( buttonText ) {
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.When( /^я нажму на кнопку "([^"]*)"$/, function( buttonText ) {
         var button = this.helpers.parseElement( buttonText );
 
         button.name = this.helpers.fixQuotes( button.name );
@@ -19,7 +20,7 @@ module.exports = function() {
         } );
     } );
 
-    this.When( /^я нажму на кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {
+    consumer.When( /^я нажму на кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {
         var selector = this.selectors.XPATH.Button.popupCaption( popupListText );
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -39,7 +40,7 @@ module.exports = function() {
             } );
     } );
 
-    this.When( /^я не увижу кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {
+    consumer.When( /^я не увижу кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {
         var selector = this.selectors.XPATH.Button.popupCaption( popupListText );
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -64,4 +65,5 @@ module.exports = function() {
                 that.assert.equal( value, false, 'Кнопка видна' );
             } );
     } );
-};
+
+} );

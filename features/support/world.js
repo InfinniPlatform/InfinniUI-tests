@@ -4,45 +4,54 @@ var fs = require( 'fs' );
 var webdriver = require( 'selenium-webdriver' );
 var chai = require( 'chai' );
 var underscore = require( 'underscore' );
+var cucumber = require( 'cucumber' );
+
 var selectors = require( '../../helpers/selectors' );
 var helpers = require( '../../helpers/helpers' );
-var By = webdriver.By;
+var by = webdriver.By;
 var config = process.myConfig;
 
-// var capabilities = {
-//     chrome: function() {
-//         return webdriver.Capabilities.chrome();
-//     },
-//     phantomjs: function() {
-//         var caps = webdriver.Capabilities.phantomjs();
-//
-//         if( config.userOptions.phantomjs ) {
-//             caps.set( 'phantomjs.binary.path', config.userOptions.phantomjs );
-//         }
-//
-//         return caps;
-//     }
-// };
+cucumber.defineSupportCode( function( consumer ) {
+    consumer.setWorldConstructor( CustomWorld );
+} );
 
-// var buildChromeDriver = function() {
-//     return new webdriver.Builder()
-//         .withCapabilities( capabilities.chrome() )
-//         .build();
-// };
-//
-// var buildFirefoxDriver = function() {
-//     var firefox = require( 'selenium-webdriver/firefox' );
-//     var profile = new firefox.Profile( 'C:\\firefoxProfile' );
-//     var options = new firefox.Options().setProfile( profile );
-//
-//     return new firefox.Driver( options );
-// };
-//
-// var buildPhantomDriver = function() {
-//     return new webdriver.Builder()
-//         .withCapabilities( capabilities.phantomjs() )
-//         .build();
-// };
+/**
+ *
+ * @constructor
+ */
+var CustomWorld = function( consumer ) {
+    var screenshotPath = 'screenshots';
+
+    this.attach = consumer.attach;
+    this.parametrs = consumer.parametrs;
+
+    this.config = config;
+    this.webdriver = webdriver;
+    this.driver = buildDriver( config.userOptions.browser || config.defaultBrowserName );
+    this.by = by;
+    this.selectors = selectors;
+    this.helpers = helpers;
+    this.assert = chai.assert;
+    this._ = underscore;
+    this.keys = webdriver.Key;
+    this.selectAll = this.keys.chord( this.keys.CONTROL, 'a' );
+    this.currentView = null;
+
+    this.driver.manage().setTimeouts( undefined, undefined, config.timeouts.main );
+
+    if( !config.userOptions.teamcity && !config.userOptions.width && !config.userOptions.height ) {
+        this.driver.manage().window().maximize();
+    } else {
+        var width = config.userOptions.width ? parseInt( config.userOptions.width, 10 ) : config.screen.width;
+        var height = config.userOptions.height ? parseInt( config.userOptions.height, 10 ) : config.screen.height;
+
+        this.driver.manage().window().setSize( width, height );
+    }
+
+    if( !fs.existsSync( screenshotPath ) ) {
+        fs.mkdirSync( screenshotPath );
+    }
+};
 
 /**
  *
@@ -97,52 +106,3 @@ var buildDriver = function( browserName ) {
 
     return driver;
 };
-
-/**
- *
- * @returns {Builder}
- */
-var getDriver = function() {
-    return driver;
-};
-
-/**
- *
- * @constructor
- */
-var World = function() {
-    var screenshotPath = 'screenshots';
-
-    this.config = config;
-    this.webdriver = webdriver;
-    this.driver = driver;
-    this.by = By;
-    this.selectors = selectors;
-    this.helpers = helpers;
-    this.assert = chai.assert;
-    this._ = underscore;
-    this.keys = webdriver.Key;
-    this.selectAll = this.keys.chord( this.keys.CONTROL, 'a' );
-    this.currentView = null;
-
-    this.driver.manage().setTimeouts( undefined, undefined, config.timeouts.main );
-
-    if( !config.userOptions.teamcity && !config.userOptions.width && !config.userOptions.height ) {
-        this.driver.manage().window().maximize();
-    } else {
-        var width = config.userOptions.width ? parseInt( config.userOptions.width, 10 ) : config.screen.width;
-        var height = config.userOptions.height ? parseInt( config.userOptions.height, 10 ) : config.screen.height;
-
-        this.driver.manage().window().setSize( width, height );
-    }
-
-    if( !fs.existsSync( screenshotPath ) ) {
-        fs.mkdirSync( screenshotPath );
-    }
-};
-
-var driver = buildDriver( config.userOptions.browser || config.defaultBrowserName );
-
-module.exports.World = World;
-module.exports.getDriver = getDriver;
-module.exports.By = By;
