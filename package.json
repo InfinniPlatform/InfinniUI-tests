@@ -1,5 +1,6 @@
 {
   "name": "infinni-ui-e2e",
+  "version": "2.0.0",
   "dependencies": {
     "chai": "^4.0.2",
     "node-xlsx": "^0.7.4",
