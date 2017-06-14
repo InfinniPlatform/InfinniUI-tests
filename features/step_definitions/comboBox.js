@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^я выберу в выпадающем списке "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );

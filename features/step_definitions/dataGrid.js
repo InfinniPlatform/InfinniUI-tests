@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^я увижу в таблице "([^"]*)" строку под номером "([^"]*)" со значением "([^"]*)"$/, function( dataGridName, rowIndex, values ) {
         var selector = this.selectors.XPATH.DataGrid.body( dataGridName );

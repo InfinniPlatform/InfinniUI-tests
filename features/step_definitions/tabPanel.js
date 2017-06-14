@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^я выберу вкладку "([^"]*)" на панели "([^"]*)"$/, function( tabPageLabel, panelName ) {
         var selector = this.selectors.XPATH.TabPanel.page( panelName, tabPageLabel );

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^я выберу вариант "([^"]*)" в радиогруппе "([^"]*)"$/, function( variantText, radioGroupName ) {
         var radioGroup = this.helpers.parseElement( radioGroupName );

@@ -1,10 +1,9 @@
 'use strict';
 
-var args = require( '../../helpers/arguments.js' )( process.argv.slice( 2 ) );
-var teamcity = require( '../../helpers/teamcityFormatter.js' );
+var teamcity = require( '../../helpers/teamcityFormatter' );
 
 module.exports = function() {
-    if( args.teamcity ) {
+    if( process.userOptions.teamcity ) {
         teamcity.call( this );
     }
 };

@@ -1,11 +1,11 @@
 'use strict';
 
-var driver = require( './world.js' ).getDriver();
-var by = require( './world.js' ).By;
 var fs = require( 'fs' );
 var path = require( 'path' );
 var sanitize = require( 'sanitize-filename' );
-var args = require( '../../helpers/arguments.js' )( process.argv.slice( 2 ) );
+var world = require( './world' );
+var driver = world.getDriver();
+var by = world.By;
 
 var myHooks = function() {
 
@@ -31,7 +31,6 @@ var myHooks = function() {
     } );
 
     this.registerHandler( 'BeforeStep', function( step, callback ) {
-        var attempt = 0;
         var totalAttempts = 60;
 
         driver.manage().setTimeouts( undefined, undefined, process.myConfig.timeouts.wait );
@@ -52,11 +51,11 @@ var myHooks = function() {
                         }
                     }
                 } );
-        } )( 1 );
+        } )( 0 );
     } );
 
     try {
-        require( '../../helpers/extensions.js' ).call( this, driver, args );
+        require( process.myConfig.extension ).call( this, driver );
     } catch( err ) {
         console.log( 'Extensions not found' );
     }

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^я нажму на кнопку "([^"]*)"$/, function( buttonText ) {
         var button = this.helpers.parseElement( buttonText );

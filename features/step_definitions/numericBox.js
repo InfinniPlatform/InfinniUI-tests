@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^значение в числовом поле "([^"]*)" равно "([^"]*)"$/, function( fieldLabel, value ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );

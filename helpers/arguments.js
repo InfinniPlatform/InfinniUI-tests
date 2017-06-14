@@ -2,19 +2,14 @@
 
 /**
  *
- * @param argv
+ * @param result
+ * @param arg
  * @returns {*}
  */
-module.exports = function( argv ) {
-    var result = {};
+module.exports = function( result, arg ) {
+    var regex = arg.replace( /"/g, '' ).match( /^--(\w+):([\s\S]*)$/ );
 
-    for( var i = 0, ii = argv.length; i < ii; i++ ) {
-        var regex = argv[ i ].replace( /"/g, '' ).match( /^--(\w+):([\s\S]*)$/ );
-
-        if( !regex || regex.length !== 3 ) {
-            continue;
-        }
-
+    if( regex || regex.length === 3 ) {
         result[ regex[ 1 ] ] = regex[ 2 ];
     }
 

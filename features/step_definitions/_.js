@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.Then( /^система отобразит список валидационных сообщений: (.*?)$/, function( messages ) {
         var selector = this.selectors.XPATH.Toastr.messages();

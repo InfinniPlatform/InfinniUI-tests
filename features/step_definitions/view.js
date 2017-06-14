@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.Given( /^я нахожусь на экране "([^"]*)"$/, function( viewName ) {
         var that = this;

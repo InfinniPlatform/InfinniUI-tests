@@ -1,9 +1,12 @@
 var defaultConfig = require( './config' );
-var customConfig;
-var cliConfig;
-var configFileOpt = '--config-file:';
+var userArgsParser = require( './helpers/arguments' );
 
-var addCustomConfig = function( param ) {
+var configFileOpt = '--config-file:';
+var userArgs = {};
+var customConfig = {};
+var cliConfig = {};
+
+var addCustomConfigFile = function( param ) {
     try {
         customConfig = require( param.slice( configFileOpt.length ) );
     } catch ( e ) {
@@ -14,23 +17,27 @@ var addCustomConfig = function( param ) {
 var parseArgvs = function() {
     var argvs = process.argv.slice( 2 );
 
-    for( var i = 0, ii = argvs.length; i < ii; i += 1 ) {
+    for( var i = 0; i < argvs.length; i += 1 ) {
+        var elementsCount = 1;
         var param = argvs[ i ];
 
         if( param.indexOf( configFileOpt ) !== -1 ) {
-            addCustomConfig( param );
-            i -= 1;
-            argvs.splice( i, 1 );
+            addCustomConfigFile( param );
+        } else if( param.indexOf( ':' ) !== -1 ) {
+            userArgsParser( userArgs, param );
         } else if( param.indexOf( '--' ) !== -1 ) {
             cliConfig[ param ] = argvs[ i + 1 ];
-
-            i -= 1;
-            argvs.splice( i, 2 );
+            elementsCount = 2;
         }
+
+        argvs.splice( i, elementsCount );
+        i -= 1;
     }
 
-    console.log( customConfig );
-    console.log( cliConfig );
+    console.log( 'customConfig -> ', customConfig );
+    console.log( '\n\n' );
+    console.log( 'cliConfig -> ', cliConfig );
+    console.log( '\n\n' );
 };
 
 var clearArgvs = function() {
@@ -62,32 +69,50 @@ var merge = function( dest, source ) {
     return dest;
 };
 
-var fillArgv = function( argvs ) {
-    for( var key in argvs ) {
-        if( argvs.hasOwnProperty( key ) ) {
+var fillArgv = function( mergedConfig ) {
+    var options = mergedConfig.options;
+    var folders = mergedConfig.folders;
+
+    folders.forEach( function( folder ) {
+        process.argv.push( folder );
+    } );
+
+    for( var key in options ) {
+        if( options.hasOwnProperty( key ) ) {
             process.argv.push( key );
-            process.argv.push( argvs[ key ] );
+            process.argv.push( options[ key ] );
         }
     }
 };
 
-var buildConfig = function() {
-    var mergedConfig = merge( defaultConfig, customConfig );
-
+var overrideMergedByCliConfig = function( mergedConfig ) {
     for( var key in cliConfig ) {
         if( cliConfig.hasOwnProperty( key ) ) {
             mergedConfig.options[ key ] = cliConfig[ key ];
         }
     }
 
-    fillArgv( mergedConfig.options );
+    mergedConfig.userOptions = userArgs;
+};
+
+var buildConfig = function() {
+    var mergedConfig = merge( defaultConfig, customConfig );
+
+    overrideMergedByCliConfig( mergedConfig );
+    fillArgv( mergedConfig );
+
+    // add config to global variable
     process.myConfig = mergedConfig;
 };
 
 var startTests = function() {
     var npm = require( 'npm' );
-
-    npm.load( './node_modules/cucumber/bin/cucumber.js' );
+    var cucumber = require( './node_modules/cucumber/bin/cucumber' );
+    console.log( 'process.argv -> ', process.argv );
+    console.log( '\n\n' );
+    console.log( 'process.myConfig -> ', process.myConfig );
+    console.log( '\n\n' );
+    npm.load( cucumber );
 };
 
 parseArgvs();

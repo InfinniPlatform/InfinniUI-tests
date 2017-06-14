@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^я удалю прикрепленный файл из поля "([^"]*)"$/, function( fileBoxName ) {
         fileBoxName = this.helpers.parseElement( fileBoxName );

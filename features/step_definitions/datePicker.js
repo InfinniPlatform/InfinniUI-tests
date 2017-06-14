@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^я введу в поле типа дата "([^"]*)" значение "([^"]*)"$/, function( pickerText, date ) {
         var picker = this.helpers.parseElement( pickerText );

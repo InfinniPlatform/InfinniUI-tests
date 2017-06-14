@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function() {
-    this.World = require( '../support/world.js' ).World;
+    this.World = require( '../support/world' ).World;
 
     this.When( /^я раскрою\\закрою в дереве "([^"]*)" элемент "([^"]*)"$/, function( treeViewName, elementText ) {
         var selector = this.selectors.XPATH.TreeView.name( treeViewName );

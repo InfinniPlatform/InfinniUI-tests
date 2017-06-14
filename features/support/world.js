@@ -4,10 +4,10 @@ var fs = require( 'fs' );
 var webdriver = require( 'selenium-webdriver' );
 var chai = require( 'chai' );
 var underscore = require( 'underscore' );
-var args = require( '../../helpers/arguments.js' )( process.argv.slice( 2 ) );
-var selectors = require( '../../helpers/selectors.js' );
-var helpers = require( '../../helpers/helpers.js' );
+var selectors = require( '../../helpers/selectors' );
+var helpers = require( '../../helpers/helpers' );
 var By = webdriver.By;
+var config = process.myConfig;
 
 // var capabilities = {
 //     chrome: function() {
@@ -16,8 +16,8 @@ var By = webdriver.By;
 //     phantomjs: function() {
 //         var caps = webdriver.Capabilities.phantomjs();
 //
-//         if( args.phantomjs ) {
-//             caps.set( 'phantomjs.binary.path', args.phantomjs );
+//         if( config.userOptions.phantomjs ) {
+//             caps.set( 'phantomjs.binary.path', config.userOptions.phantomjs );
 //         }
 //
 //         return caps;
@@ -71,13 +71,13 @@ var setOptionsForDriver = function( driver, browserName ) {
             driver.setSafariOptions();
             break;
         case 'phantomjs':
-            driver.set( 'phantomjs.binary.path', process.myConfig.browsers[ browserName ].binaryPath );
+            driver.set( 'phantomjs.binary.path', config.browsers[ browserName ].binaryPath );
             break;
         default:
             if( browserName ) {
                 throw new Error( 'Invalid platform ' + ( browserName || '' ) + '' );
             } else {
-                return setOptionsForDriver( driver, process.myConfig.defaultBrowserName );
+                return setOptionsForDriver( driver, config.defaultBrowserName );
             }
     }
 
@@ -90,7 +90,7 @@ var setOptionsForDriver = function( driver, browserName ) {
  * @returns {Builder}
  */
 var buildDriver = function( browserName ) {
-    var driver = new webdriver.Builder().forBrowser( browserName, process.myConfig.browsers[ browserName ].version );
+    var driver = new webdriver.Builder().forBrowser( browserName, config.browsers[ browserName ].version );
 
     driver = setOptionsForDriver( driver, browserName );
     driver.build();
@@ -113,7 +113,7 @@ var getDriver = function() {
 var World = function() {
     var screenshotPath = 'screenshots';
 
-    this.config = process.myConfig;
+    this.config = config;
     this.webdriver = webdriver;
     this.driver = driver;
     this.by = By;
@@ -125,13 +125,14 @@ var World = function() {
     this.selectAll = this.keys.chord( this.keys.CONTROL, 'a' );
     this.currentView = null;
 
-    this.driver.manage().setTimeouts( undefined, undefined, this.config.timeouts.main );
+    this.driver.manage().setTimeouts( undefined, undefined, config.timeouts.main );
 
-    if( !args.teamcity && !args.width && !args.height ) {
+    if( !config.userOptions.teamcity && !config.userOptions.width && !config.userOptions.height ) {
         this.driver.manage().window().maximize();
     } else {
-        var width = args.width ? parseInt( args.width, 10 ) : this.config.screen.width;
-        var height = args.height ? parseInt( args.height, 10 ) : this.config.screen.height;
+        var width = config.userOptions.width ? parseInt( config.userOptions.width, 10 ) : config.screen.width;
+        var height = config.userOptions.height ? parseInt( config.userOptions.height, 10 ) : config.screen.height;
+
         this.driver.manage().window().setSize( width, height );
     }
 
@@ -140,7 +141,7 @@ var World = function() {
     }
 };
 
-var driver = buildDriver( args.platform );
+var driver = buildDriver( config.userOptions.platform || config.defaultBrowserName );
 
 module.exports.World = World;
 module.exports.getDriver = getDriver;
