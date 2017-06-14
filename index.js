@@ -33,11 +33,6 @@ var parseArgvs = function() {
         argvs.splice( i, elementsCount );
         i -= 1;
     }
-
-    console.log( 'customConfig -> ', customConfig );
-    console.log( '\n\n' );
-    console.log( 'cliConfig -> ', cliConfig );
-    console.log( '\n\n' );
 };
 
 var clearArgvs = function() {
