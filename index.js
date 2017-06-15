@@ -68,16 +68,17 @@ var fillArgv = function( mergedConfig ) {
     var options = mergedConfig.options;
     var folders = mergedConfig.folders;
 
-    folders.forEach( function( folder ) {
-        process.argv.push( folder );
-    } );
-
     for( var key in options ) {
         if( options.hasOwnProperty( key ) ) {
             process.argv.push( key );
             process.argv.push( options[ key ] );
         }
     }
+
+    folders.forEach( function( folder ) {
+        process.argv.push( '--require' );
+        process.argv.push( folder );
+    } );
 };
 
 var overrideProps = function( dest, source ) {

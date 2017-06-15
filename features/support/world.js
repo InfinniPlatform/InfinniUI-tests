@@ -37,7 +37,7 @@ var CustomWorld = function( consumer ) {
     this.selectAll = this.keys.chord( this.keys.CONTROL, 'a' );
     this.currentView = null;
 
-    this.driver.manage().setTimeouts( undefined, undefined, config.timeouts.main );
+    this.driver.manage().timeouts().implicitlyWait( config.timeouts.main );
 
     if( !config.userOptions.teamcity && !config.userOptions.width && !config.userOptions.height ) {
         this.driver.manage().window().maximize();
@@ -102,7 +102,6 @@ var buildDriver = function( browserName ) {
     var driver = new webdriver.Builder().forBrowser( browserName, config.browsers[ browserName ].version );
 
     driver = setOptionsForDriver( driver, browserName );
-    driver.build();
 
-    return driver;
+    return driver.build();
 };

@@ -53,11 +53,11 @@ cucumber.defineSupportCode( function( consumer ) {
         var xpath = this.by.xpath( selector );
         var driver = this.driver;
 
-        driver.manage().setTimeouts( undefined, undefined, 4500 );
+        driver.manage().timeouts().implicitlyWait( 4500 );
 
         return driver.findElements( xpath )
             .then( function( msgs ) {
-                driver.manage().setTimeouts( undefined, undefined, process.myConfig.timeouts.main );
+                driver.manage().timeouts().implicitlyWait( process.myConfig.timeouts.main );
                 if( msgs.length != 0 ) {
                     throw new Error( 'Найдено ' + msgs.length + ' сообщений' );
                 }

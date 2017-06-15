@@ -4,7 +4,7 @@ var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
 
-    consumer.When( /^я выберу в выпадающем списке "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, value ) {
+    consumer.When( /^я выберу в выпадающем списке "(.*)" значение "(.*)"$/, function( comboBoxLabel, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = this.helpers.fixQuotes( value );
