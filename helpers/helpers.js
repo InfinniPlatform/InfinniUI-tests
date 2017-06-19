@@ -146,11 +146,12 @@ var modifyString = function( string ) {
  * @param string
  * @returns {string}
  */
-var replaceInOrder = function( string ) {
-    var args = Array.prototype.slice( arguments );
-    var modifiedStr = string;
+var replaceInOrder = function() {
+    var args = Array.prototype.slice.call( arguments );
+    var modifiedStr = args[ 0 ];
 
     for( var i = 1, ii = args.length; i < ii; i += 1 ) {
+        console.log( 'args[ i ]', args[ i ] );
         modifiedStr = modifiedStr.replace( '%s', args[ i ] );
     }
 
@@ -161,7 +162,7 @@ var replaceInOrder = function( string ) {
  *
  */
 var fillStringAndWrite = function() {
-    var message = replaceInOrder( arguments );
+    var message = replaceInOrder.apply( this, arguments );
 
     write( message );
 };
@@ -223,19 +224,19 @@ var log = function( message ) {
  */
 var fixStepResult = function( step ) {
     step.isPending = function() {
-        return this.getStatus() == 'pending';
+        return this.status == 'pending';
     };
     step.isSkipped = function() {
-        return this.getStatus() == 'skipped';
+        return this.status == 'skipped';
     };
     step.isUndefined = function() {
-        return this.getStatus() == 'undefined';
+        return this.status == 'undefined';
     };
     step.isFailed = function() {
-        return this.getStatus() == 'failed';
+        return this.status == 'failed';
     };
     step.isSuccessful = function() {
-        return this.getStatus() == 'successful';
+        return this.status == 'successful';
     };
 };
 

@@ -3,7 +3,7 @@
 var teamcity = require( '../../helpers/teamcityFormatter' );
 
 module.exports = function() {
-    if( process.userOptions.teamcity ) {
+    if( process.myConfig.userOptions.teamcity ) {
         teamcity.call( this );
     }
 };

@@ -9,20 +9,19 @@ var helpers = require( './helpers' );
  * @param callback
  * @returns {*}
  */
-var handleStepResult = function( event, callback ) {
-    var stepResult = event.getPayloadItem( 'stepResult' );
-
+var handleStepResult = function( stepResult, callback ) {
     helpers.fixStepResult( stepResult );
 
     if( !stepResult.isSuccessful() && !stepResult.isPending() &&
         !stepResult.isSkipped() && !stepResult.isUndefined() ) {
 
-        var failMessage = stepResult.getFailureException();
+        var failMessage = stepResult.failureException;
 
         if( failMessage ) {
             var translitedStr = translit( failMessage.stack || failMessage );
             var name = helpers.modifyString( translitedStr );
             var message = helpers.replaceInOrder( consts.testFailed1, currentScenario, name );
+
             helpers.logError( message );
         }
 
@@ -37,9 +36,8 @@ var handleStepResult = function( event, callback ) {
  * @param event
  * @param callback
  */
-var handleBeforeFeature = function( event, callback ) {
-    var feature = event.getPayloadItem( 'feature' );
-    var translitedStr = translit( getTag( feature ) + feature.getName() );
+var handleBeforeFeature = function( feature, callback ) {
+    var translitedStr = translit( getTag( feature ) + feature.name );
     var name = helpers.modifyString( translitedStr );
     var message = helpers.replaceInOrder( consts.testSuitStarted1, name );
 
@@ -51,9 +49,8 @@ var handleBeforeFeature = function( event, callback ) {
  * @param event
  * @param callback
  */
-var handleAfterFeature = function( event, callback ) {
-    var feature = event.getPayloadItem( 'feature' );
-    var translitedStr = translit( getTag( feature ) + feature.getName() );
+var handleAfterFeature = function( featureResult, callback ) {
+    var translitedStr = translit( getTag( featureResult ) + featureResult.name );
     var name = helpers.modifyString( translitedStr );
     var message = helpers.replaceInOrder( consts.testSuitFinished1, name );
 
@@ -66,9 +63,8 @@ var handleAfterFeature = function( event, callback ) {
  * @param event
  * @param callback
  */
-var handleBeforeScenario = function( event, callback ) {
-    var scenario = event.getPayloadItem( 'scenario' );
-    var translitedStr = translit( getTag( scenario ) + scenario.getName() );
+var handleBeforeScenario = function( scenario, callback ) {
+    var translitedStr = translit( getTag( scenario ) + scenario.name );
     var name = helpers.modifyString( translitedStr );
     var message = helpers.replaceInOrder( consts.testStarted1, name );
 
@@ -83,9 +79,8 @@ var handleBeforeScenario = function( event, callback ) {
  * @param event
  * @param callback
  */
-var handleAfterScenario = function( event, callback ) {
-    var scenario = event.getPayloadItem( 'scenario' );
-    var translitedStr = translit( getTag( scenario ) + scenario.getName() );
+var handleAfterScenario = function( scenarioResult, callback ) {
+    var translitedStr = translit( getTag( scenarioResult ) + scenarioResult.name );
     var name = helpers.modifyString( translitedStr );
     var message = helpers.replaceInOrder( consts.testFinished1, name );
 
@@ -99,21 +94,22 @@ var handleAfterScenario = function( event, callback ) {
  * @returns {*}
  */
 var getTag = function( item ) {
-    var tags = item.getTags();
+    var tags = item.tags;
 
     if( tags.length == 0 ) {
         return '';
     }
 
-    return tags[ 0 ].getName() + ' ';
+    return tags[ 0 ].name + ' ';
 };
+var cucumber = require( 'cucumber' );
 
-var teamCityFormatter = function() {
-    this.registerHandler( 'BeforeFeature', handleBeforeFeature );
-    this.registerHandler( 'AfterFeature', handleAfterFeature );
-    this.registerHandler( 'BeforeScenario', handleBeforeScenario );
-    this.registerHandler( 'AfterScenario', handleAfterScenario );
-    this.registerHandler( 'StepResult', handleStepResult );
-};
+cucumber.defineSupportCode( function( consumer ) {
 
-module.exports = teamCityFormatter;
+    consumer.registerHandler( 'BeforeFeature', handleBeforeFeature );
+    consumer.registerHandler( 'AfterFeature', handleAfterFeature );
+    consumer.registerHandler( 'BeforeScenario', handleBeforeScenario );
+    consumer.registerHandler( 'AfterScenario', handleAfterScenario );
+    consumer.registerHandler( 'StepResult', handleStepResult );
+
+} );

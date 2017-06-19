@@ -16,7 +16,7 @@ cucumber.defineSupportCode( function( consumer ) {
             if( elements.length < button.index + 1 ) {
                 throw new Error( 'Элемент не найден' );
             }
-            elements[ button.index ].click();
+            return elements[ button.index ].click();
         } );
     } );
 
@@ -62,7 +62,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return elements[ 0 ].isDisplayed();
             } )
             .then( function( value ) {
-                that.assert.equal( value, false, 'Кнопка видна' );
+                return that.assert.equal( value, false, 'Кнопка видна' );
             } );
     } );
 

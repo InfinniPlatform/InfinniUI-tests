@@ -8,8 +8,12 @@ var cucumber = require( 'cucumber' );
 
 var selectors = require( '../../helpers/selectors' );
 var helpers = require( '../../helpers/helpers' );
-var by = webdriver.By;
 var config = process.myConfig;
+
+var chrome = require( 'selenium-webdriver/chrome' );
+
+webdriver.logging.installConsoleHandler();
+webdriver.logging.getLogger('promise.ControlFlow').setLevel(webdriver.logging.Level.ALL);
 
 cucumber.defineSupportCode( function( consumer ) {
     consumer.setWorldConstructor( CustomWorld );
@@ -28,7 +32,7 @@ var CustomWorld = function( consumer ) {
     this.config = config;
     this.webdriver = webdriver;
     this.driver = buildDriver( config.userOptions.browser || config.defaultBrowserName );
-    this.by = by;
+    this.by = webdriver.By;
     this.selectors = selectors;
     this.helpers = helpers;
     this.assert = chai.assert;
@@ -36,8 +40,6 @@ var CustomWorld = function( consumer ) {
     this.keys = webdriver.Key;
     this.selectAll = this.keys.chord( this.keys.CONTROL, 'a' );
     this.currentView = null;
-
-    this.driver.manage().timeouts().implicitlyWait( config.timeouts.main );
 
     if( !config.userOptions.teamcity && !config.userOptions.width && !config.userOptions.height ) {
         this.driver.manage().window().maximize();
@@ -51,6 +53,8 @@ var CustomWorld = function( consumer ) {
     if( !fs.existsSync( screenshotPath ) ) {
         fs.mkdirSync( screenshotPath );
     }
+
+    process.world = this;
 };
 
 /**
@@ -62,7 +66,8 @@ var CustomWorld = function( consumer ) {
 var setOptionsForDriver = function( driver, browserName ) {
     switch( browserName ) {
         case 'chrome':
-            driver.setChromeOptions(); // add options params
+            var options = new chrome.Options().addArguments( '--ignore-certificate-errors' );
+            driver.setChromeOptions( options );
             break;
         case 'firefox':
             driver.setFirefoxOptions();

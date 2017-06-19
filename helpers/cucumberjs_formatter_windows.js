@@ -45,15 +45,16 @@ var getCurrentDate = function() {
     return '' + year + '-' + month + '-' + day + 'T' + hours + ':' + minutes + ':' + seconds + '.' + milliseconds + '' + timezone + '00';
 };
 
-var JetBrainsSMListener = function() {
-    var currentFeature;
-    var lastFailedTestName = null;
+var currentFeature;
+var lastFailedTestName = null;
+var cucumber = require( 'cucumber' );
 
-    this.StepResult( function( event, callback ) {
-        var stepResult = event.getPayloadItem( 'stepResult' );
-        var step = stepResult.getStep();
+cucumber.supportCodeLibrary( function( consumer ) {
+
+    consumer.registerHandler( 'StepResult', function( stepResult, callback ) {
+        var step = stepResult.step;
         var currentTime = getCurrentDate();
-        var escapedTeamCity = helpers.escapeForTeamCity( step.getName() );
+        var escapedTeamCity = helpers.escapeForTeamCity( step.name );
 
         if( lastFailedTestName !== null && typeof lastFailedTestName !== 'undefined' && lastFailedTestName === escapedTeamCity ) {
             asyncCall( callback );
@@ -70,7 +71,7 @@ var JetBrainsSMListener = function() {
         } else if( stepResult.isFailed() ) {
             lastFailedTestName = escapedTeamCity;
 
-            var exception = stepResult.getFailureException();
+            var exception = stepResult.failureException;
             var stack = helpers.modifyString( exception.stack.toString() );
 
             helpers.fillStringAndWrite( consts.testFailed2, currentTime, stack, '', escapedTeamCity );
@@ -81,7 +82,7 @@ var JetBrainsSMListener = function() {
         helpers.asyncCall( callback );
     } );
 
-    this.BeforeFeatures( function handleBeforeFeaturesEvent( event, callback ) {
+    consumer.registerHandler( 'BeforeFeatures', function( features, callback ) {
         var currentTime = getCurrentDate();
 
         helpers.fillStringAndWrite( consts.enteredTheMatrix, currentTime );
@@ -89,58 +90,51 @@ var JetBrainsSMListener = function() {
         helpers.asyncCall( callback );
     } );
 
-    this.BeforeFeature( function( event, callback ) {
+    consumer.registerHandler( 'BeforeFeature', function( feature, callback ) {
         var currentTime = getCurrentDate();
-        var feature = event.getPayloadItem( 'feature' );
 
         currentFeature = feature;
 
-        helpers.fillStringAndWrite( consts.testSuiteStarted1, currentTime, feature.getUri() + ':' + feature.getLine(), feature.getName() );
+        helpers.fillStringAndWrite( consts.testSuiteStarted1, currentTime, feature.uri + ':' + feature.line, feature.name );
         helpers.asyncCall( callback );
     } );
 
-    this.AfterFeature( function handleAfterFeatureEvent( event, callback ) {
+    consumer.registerHandler( 'AfterFeature', function( feature, callback ) {
         var currentTime = getCurrentDate();
-        var feature = event.getPayloadItem( 'feature' );
 
-        helpers.fillStringAndWrite( consts.testSuiteFinished1, currentTime, feature.getName() );
+        helpers.fillStringAndWrite( consts.testSuiteFinished1, currentTime, feature.name );
         helpers.asyncCall( callback );
     } );
 
-    this.BeforeStep( function handleBeforeScenarioEvent( event, callback ) {
+    consumer.registerHandler( 'BeforeStep', function( step, callback ) {
         var currentTime = getCurrentDate();
-        var step = event.getPayloadItem( 'step' );
-        var escapedTeamCity = helpers.escapeForTeamCity( step.getName() );
+        var escapedTeamCity = helpers.escapeForTeamCity( step.name );
 
-        helpers.fillStringAndWrite( consts.testStarted, currentTime, step.getUri() + ':' + step.getLine(), escapedTeamCity );
+        helpers.fillStringAndWrite( consts.testStarted, currentTime, step.uri + ':' + step.line, escapedTeamCity );
         helpers.asyncCall( callback );
     } );
 
-    this.BeforeScenario( function handleBeforeScenario( event, callback ) {
+    consumer.registerHandler( 'BeforeScenario', function( scenario, callback ) {
         var currentTime = getCurrentDate();
-        var scenario = event.getPayloadItem( 'scenario' );
 
         helpers.fillStringAndWrite( consts.customProgressStatus3, currentTime );
-        helpers.fillStringAndWrite( consts.testSuiteStarted2, currentTime, scenario.getUri() + ':' + scenario.getLine(), scenario.getName() );
+        helpers.fillStringAndWrite( consts.testSuiteStarted2, currentTime, scenario.uri + ':' + scenario.line, scenario.name );
         helpers.asyncCall( callback );
     } );
 
-    this.AfterScenario( function handleAfterScenario( event, callback ) {
+    consumer.registerHandler( 'AfterScenario', function( scenario, callback ) {
         var currentTime = getCurrentDate();
-        var scenario = event.getPayloadItem( 'scenario' );
 
-        helpers.fillStringAndWrite( consts.testSuiteFinished2, currentTime, scenario.getName() );
+        helpers.fillStringAndWrite( consts.testSuiteFinished2, currentTime, scenario.name );
         helpers.asyncCall( callback );
     } );
 
 
-    this.AfterFeatures( function handleAfterFeaturesEvent( event, callback ) {
+    consumer.registerHandler( 'AfterFeatures', function( features, callback ) {
         var currentTime = getCurrentDate();
 
         helpers.fillStringAndWrite( consts.customProgressStatus4, currentTime );
         helpers.asyncCall( callback );
     } );
 
-};
-
-module.exports = JetBrainsSMListener;
+} );

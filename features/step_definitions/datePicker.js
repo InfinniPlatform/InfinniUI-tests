@@ -24,7 +24,13 @@ cucumber.defineSupportCode( function( consumer ) {
                 return that.currentView.findElement( that.by.id( id ) );
             } )
             .then( function( input ) {
-                return input.sendKeys( that.selectAll, that.keys.BACK_SPACE, date );
+                var arr = [ that.selectAll, that.keys.BACK_SPACE ];
+
+                date.forEach( function( number ) {
+                    arr.push( number );
+                } );
+
+                return input.sendKeys.apply( input, arr );
             } );
     } );
 
