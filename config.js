@@ -7,7 +7,7 @@ module.exports = {
         wait: 10
     },
 
-    defaultBrowserName: 'firefox',
+    defaultBrowserName: 'chrome',
 
     screen: {
         width: 1920,
@@ -43,9 +43,6 @@ module.exports = {
     folders: [
         path.resolve( __dirname, 'features' ) // folder with default files
     ],
-
-    // path to extension file
-    extension: '',
 
     // all user options goes here
     userOptions: {
