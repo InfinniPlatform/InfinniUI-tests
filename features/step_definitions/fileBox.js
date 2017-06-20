@@ -1,27 +1,29 @@
 'use strict';
 
-module.exports = function() {
-    this.World = require('../support/world.js').World;
+var cucumber = require( 'cucumber' );
 
-    this.When(/^я удалю прикрепленный файл из поля "([^"]*)"$/, function(fileBoxName) {
-        fileBoxName = this.helpers.parseElement(fileBoxName);
+cucumber.defineSupportCode( function( consumer ) {
 
-        var selector = this.selectors.XPATH.FileBox.caption(fileBoxName.name);
-        var xpath = this.by.xpath(selector);
+    consumer.When( /^я удалю прикрепленный файл из поля "([^"]*)"$/, function( fileBoxName ) {
+        fileBoxName = this.helpers.parseElement( fileBoxName );
 
-        return this.currentView.findElements(xpath)
-            .then(function(element) {
-                if (element.length <= fileBoxName.index) {
-                    throw new Error('Элемент не найден');
+        var selector = this.selectors.XPATH.FileBox.caption( fileBoxName.name );
+        var xpath = this.by.xpath( selector );
+
+        return this.currentView.findElements( xpath )
+            .then( function( element ) {
+                if( element.length <= fileBoxName.index ) {
+                    throw new Error( 'Элемент не найден' );
                 }
 
                 var selector = this.selectors.XPATH.FileBox.removeButton();
-                var xpath = this.by.xpath(selector);
+                var xpath = this.by.xpath( selector );
 
-                return element[fileBoxName.index].findElement(xpath);
-            }.bind(this))
-            .then(function(button) {
+                return element[ fileBoxName.index ].findElement( xpath );
+            }.bind( this ) )
+            .then( function( button ) {
                 return button.click();
-            });
-    });
-};
+            } );
+    } );
+
+} );

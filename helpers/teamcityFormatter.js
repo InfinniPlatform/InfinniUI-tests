@@ -1,106 +1,115 @@
-function teamCityFormatter() {
-    this.registerHandler("BeforeFeature", handleBeforeFeature);
-    this.registerHandler("AfterFeature", handleAfterFeature);
-    this.registerHandler("BeforeScenario", handleBeforeScenario);
-    this.registerHandler("AfterScenario", handleAfterScenario);
-    this.registerHandler("StepResult", handleStepResult);
-}
-
-module.exports = teamCityFormatter;
-
 var currentScenario;
-var translit = require('translitit-cyrillic-russian-to-latin');
+var translit = require( 'translitit-cyrillic-russian-to-latin' );
+var consts = require( './constants.json' ).teamCityFormatter.stepResult;
+var helpers = require( './helpers' );
 
-function handleStepResult(event, callback) {
-    var stepResult = event.getPayloadItem("stepResult");
-    var step = stepResult.getStep();
+/**
+ *
+ * @param event
+ * @param callback
+ * @returns {*}
+ */
+var handleStepResult = function( stepResult, callback ) {
+    helpers.fixStepResult( stepResult );
 
-    fixStepResult(stepResult);
+    if( !stepResult.isSuccessful() && !stepResult.isPending() &&
+        !stepResult.isSkipped() && !stepResult.isUndefined() ) {
 
-    var error = !stepResult.isSuccessful() && !stepResult.isPending() && !stepResult.isSkipped() && !stepResult.isUndefined();
+        var failMessage = stepResult.failureException;
 
-    if (error) {
-        var failureMessage = stepResult.getFailureException();
-        if (failureMessage) {
-            process.stderr.write("##teamcity[testFailed name='" + currentScenario +
-                "' details='" + escape(failureMessage.stack || failureMessage) + "']\n");
+        if( failMessage ) {
+            var translitedStr = translit( failMessage.stack || failMessage );
+            var name = helpers.modifyString( translitedStr );
+            var message = helpers.replaceInOrder( consts.testFailed1, currentScenario, name );
+
+            helpers.logError( message );
         }
+
         return callback();
     }
 
-    setTimeout(function () {
-        callback();
-    }, 0);
-}
+    helpers.asyncCall( callback );
+};
 
-function handleBeforeFeature(event, callback) {
-    var feature = event.getPayloadItem("feature");
-    process.stderr.write("##teamcity[testSuiteStarted name='" + escape(getTag(feature) + feature.getName()) + "']\n");
-    setTimeout(function () {
-        callback();
-    }, 0);
-}
+/**
+ *
+ * @param event
+ * @param callback
+ */
+var handleBeforeFeature = function( feature, callback ) {
+    var translitedStr = translit( getTag( feature ) + feature.name );
+    var name = helpers.modifyString( translitedStr );
+    var message = helpers.replaceInOrder( consts.testSuitStarted1, name );
 
-function handleAfterFeature(event, callback) {
-    var feature = event.getPayloadItem("feature");
-    process.stdout.write("##teamcity[testSuiteFinished name='" + escape(getTag(feature) + feature.getName()) + "']\n");
-    setTimeout(function () {
-        callback();
-    }, 0);
-}
+    helpers.logError( message );
+    helpers.asyncCall( callback );
+};
+/**
+ *
+ * @param event
+ * @param callback
+ */
+var handleAfterFeature = function( featureResult, callback ) {
+    var translitedStr = translit( getTag( featureResult ) + featureResult.name );
+    var name = helpers.modifyString( translitedStr );
+    var message = helpers.replaceInOrder( consts.testSuitFinished1, name );
 
-function handleBeforeScenario(event, callback) {
-    var scenario = event.getPayloadItem("scenario");
-    process.stderr.write("##teamcity[testStarted name='" + escape(getTag(scenario) + scenario.getName()) + "' captureStandardOutput='true']\n");
-    currentScenario = escape(getTag(scenario) + scenario.getName());
-    setTimeout(function () {
-        callback();
-    }, 0);
-}
+    helpers.log( message );
+    helpers.asyncCall( callback );
+};
 
-function handleAfterScenario(event, callback) {
-    var scenario = event.getPayloadItem("scenario");
-    process.stderr.write("##teamcity[testFinished name='" + escape(getTag(scenario) + scenario.getName()) + "']\n");
-    setTimeout(function () {
-        callback();
-    }, 0);
-}
+/**
+ *
+ * @param event
+ * @param callback
+ */
+var handleBeforeScenario = function( scenario, callback ) {
+    var translitedStr = translit( getTag( scenario ) + scenario.name );
+    var name = helpers.modifyString( translitedStr );
+    var message = helpers.replaceInOrder( consts.testStarted1, name );
 
-//according to: https://confluence.jetbrains.com/display/TCD7/Build+Script+Interaction+with+TeamCity
-function escape(string) {
-    return translit(string)
-        .replace(/\|/g, '||')
-        .replace(/'/g, "|'")
-        .replace(/\n/g, '|n')
-        .replace(/\r/g, '|r')
-        .replace(/\[/g, '|[')
-        .replace(/\]/g, '|]');
-}
+    currentScenario = name;
 
-function fixStepResult(step) {
-    step.isPending = function () {
-        return this.getStatus() == 'pending';
-    };
-    step.isSkipped = function () {
-        return this.getStatus() == 'skipped';
-    };
-    step.isUndefined = function () {
-        return this.getStatus() == 'undefined';
-    };
-    step.isFailed = function () {
-        return this.getStatus() == 'failed';
-    };
-    step.isSuccessful = function () {
-        return this.getStatus() == 'successful';
-    };
-}
+    helpers.logError( message );
+    helpers.asyncCall( callback );
+};
 
-function getTag(item) {
-    var tags = item.getTags();
+/**
+ *
+ * @param event
+ * @param callback
+ */
+var handleAfterScenario = function( scenarioResult, callback ) {
+    var translitedStr = translit( getTag( scenarioResult ) + scenarioResult.name );
+    var name = helpers.modifyString( translitedStr );
+    var message = helpers.replaceInOrder( consts.testFinished1, name );
 
-    if (tags.length == 0) {
+    helpers.logError( message );
+    helpers.asyncCall( callback );
+};
+
+/**
+ *
+ * @param item
+ * @returns {*}
+ */
+var getTag = function( item ) {
+    var tags = item.tags;
+
+    if( tags.length == 0 ) {
         return '';
     }
 
-    return tags[0].getName() + ' ';
-}
+    return tags[ 0 ].name + ' ';
+};
+var cucumber = require( 'cucumber' );
+
+cucumber.defineSupportCode( function( consumer ) {
+
+    consumer.registerHandler( 'BeforeFeature', handleBeforeFeature );
+    consumer.registerHandler( 'AfterFeature', handleAfterFeature );
+    consumer.registerHandler( 'BeforeScenario', handleBeforeScenario );
+    consumer.registerHandler( 'AfterScenario', handleAfterScenario );
+    consumer.registerHandler( 'StepResult', handleStepResult );
+
+} );

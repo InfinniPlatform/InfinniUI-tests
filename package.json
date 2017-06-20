@@ -1,16 +1,21 @@
 {
-  "name": "infinni-ui-integration-tests",
+  "name": "infinni-ui-e2e",
+  "version": "2.0.2",
   "dependencies": {
-    "chai": "^3.5.0",
-    "cucumber": "0.8.1",
-    "node-xlsx": "^0.7.1",
-    "sanitize-filename": "^1.6.0",
-    "selenium-webdriver": "^2.53.2",
+    "chai": "^4.0.2",
+    "sanitize-filename": "^1.6.1",
     "translitit-cyrillic-russian-to-latin": "^0.1.1",
-    "underscore": "^1.8.3",
-    "unzip": "^0.1.11"
+    "underscore": "^1.8.3"
   },
-  "scripts": {
-    "test": "node node_modules/cucumber/bin/cucumber.js --tags ~@ignore --format summary"
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-plugin-filenames": "^1.2.0"
+  },
+  "peerDependecies": {
+    "cucumber": "^2.3.1",
+    "selenium-webdriver": "^3.4.0"
+  },
+  "bin": {
+    "iui-e2e": "./bin/iui-e2e.js"
   }
 }

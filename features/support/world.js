@@ -1,105 +1,114 @@
 'use strict';
 
-var fs = require('fs');
-var webdriver = require('selenium-webdriver');
-var selectors = require('../../helpers/selectors.js');
-var args = require('../../helpers/arguments.js')(process.argv.slice(2));
-var helpers = require('../../helpers/helpers.js');
-var chai = require('chai');
-var underscore = require('underscore');
-var config = require('./config.json');
+var fs = require( 'fs' );
+var webdriver = require( 'selenium-webdriver' );
+var chai = require( 'chai' );
+var underscore = require( 'underscore' );
+var cucumber = require( 'cucumber' );
 
-var capabilities = {
-    chrome: function() {
-        return webdriver.Capabilities.chrome();
-    },
-    phantomjs: function() {
-        var caps = webdriver.Capabilities.phantomjs();
+var selectors = require( '../../helpers/selectors' );
+var helpers = require( '../../helpers/helpers' );
+var config = process.myConfig;
 
-        if (args.phantomjs) {
-            caps.set('phantomjs.binary.path', args.phantomjs);
-        }
+var chrome = require( 'selenium-webdriver/chrome' );
 
-        return caps;
-    }
-};
+webdriver.logging.installConsoleHandler();
+webdriver.logging.getLogger( 'promise.ControlFlow' ).setLevel( webdriver.logging.Level.ALL );
 
-var buildChromeDriver = function() {
-    return new webdriver.Builder()
-        .withCapabilities(capabilities.chrome())
-        .build();
-};
+process.env[ 'SELENIUM_PROMISE_MANAGER' ] = 0;
 
-var buildFirefoxDriver = function() {
-    var firefox = require('selenium-webdriver/firefox');
-    var profile = new firefox.Profile('C:\\firefoxProfile');
-    var options = new firefox.Options().setProfile(profile);
+cucumber.defineSupportCode( function( consumer ) {
+    consumer.setWorldConstructor( CustomWorld );
+} );
 
-    return new firefox.Driver(options);
-};
+/**
+ *
+ * @constructor
+ */
+var CustomWorld = function( consumer ) {
+    var screenshotPath = 'screenshots';
 
-var buildPhantomDriver = function() {
-    return new webdriver.Builder()
-        .withCapabilities(capabilities.phantomjs())
-        .build();
-};
+    this.attach = consumer.attach;
+    this.parametrs = consumer.parametrs;
 
-var driver;
-
-(function buildDriver(platform) {
-    switch (platform) {
-        case 'chrome':
-            driver = buildChromeDriver();
-            break;
-        case 'firefox':
-            driver = buildFirefoxDriver();
-            break;
-        case 'phantomjs':
-            driver = buildPhantomDriver();
-            break;
-        default:
-            if (args.platform) {
-                throw new Error('Invalid platform "' + (args.platform || '') + '"');
-            } else {
-                buildDriver(config.browser.platform);
-            }
-    }
-})(args.platform);
-
-var getDriver = function() {
-    return driver;
-};
-
-var World = function World() {
-    var screenshotPath = "screenshots";
-
+    this.config = config;
     this.webdriver = webdriver;
-    this.driver = driver;
+    this.driver = buildDriver( config.userOptions.browser || config.defaultBrowserName );
     this.by = webdriver.By;
     this.selectors = selectors;
     this.helpers = helpers;
     this.assert = chai.assert;
     this._ = underscore;
     this.keys = webdriver.Key;
-    this.selectAll = this.keys.chord(this.keys.CONTROL, 'a');
-
+    this.selectAll = this.keys.chord( this.keys.CONTROL, 'a' );
     this.currentView = null;
 
-    this.driver.manage().timeouts().implicitlyWait(config.timeouts.main);
-
-    if (!args.teamcity && !args.width && !args.height) {
+    if( !config.userOptions.teamcity && !config.userOptions.width && !config.userOptions.height ) {
         this.driver.manage().window().maximize();
     } else {
-        var width = args.width ? parseInt(args.width, 10) : config.screen.width;
-        var height = args.height ? parseInt(args.height, 10) : config.screen.height;
-        this.driver.manage().window().setSize(width, height);
+        var width = config.userOptions.width ? parseInt( config.userOptions.width, 10 ) : config.screen.width;
+        var height = config.userOptions.height ? parseInt( config.userOptions.height, 10 ) : config.screen.height;
+
+        this.driver.manage().window().setSize( width, height );
     }
 
-    if (!fs.existsSync(screenshotPath)) {
-        fs.mkdirSync(screenshotPath);
+    if( !fs.existsSync( screenshotPath ) ) {
+        fs.mkdirSync( screenshotPath );
     }
+
+    process.world = this;
 };
 
-module.exports.World = World;
-module.exports.getDriver = getDriver;
-module.exports.By = webdriver.By;
+/**
+ *
+ * @param driver
+ * @param browserName
+ * @returns {Builder}
+ */
+var setOptionsForDriver = function( driver, browserName ) {
+    switch( browserName ) {
+        case 'chrome':
+            var options = new chrome.Options().addArguments( '--ignore-certificate-errors' );
+            driver.setChromeOptions( options );
+            break;
+        case 'firefox':
+            driver.setFirefoxOptions();
+            break;
+        case 'opera':
+            driver.setOperaOptions();
+            break;
+        case 'edge':
+            driver.setEdgeOptions();
+            break;
+        case 'ie':
+            driver.setIeOptions();
+            break;
+        case 'safari':
+            driver.setSafariOptions();
+            break;
+        case 'phantomjs':
+            driver.set( 'phantomjs.binary.path', config.browsers[ browserName ].binaryPath );
+            break;
+        default:
+            if( browserName ) {
+                throw new Error( 'Invalid platform ' + ( browserName || '' ) + '' );
+            } else {
+                return setOptionsForDriver( driver, config.defaultBrowserName );
+            }
+    }
+
+    return driver;
+};
+
+/**
+ *
+ * @param browserName
+ * @returns {Builder}
+ */
+var buildDriver = function( browserName ) {
+    var driver = new webdriver.Builder().forBrowser( browserName, config.browsers[ browserName ].version );
+
+    driver = setOptionsForDriver( driver, browserName );
+
+    return driver.build();
+};

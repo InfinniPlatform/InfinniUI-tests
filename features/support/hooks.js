@@ -1,61 +1,84 @@
 'use strict';
 
-var driver = require('./world.js').getDriver();
-var by = require('./world.js').By;
-var fs = require('fs');
-var path = require('path');
-var sanitize = require('sanitize-filename');
-var args = require('../../helpers/arguments.js')(process.argv.slice(2));
-var config = require('./config.json');
+var fs = require( 'fs' );
+var path = require( 'path' );
+var cucumber = require( 'cucumber' );
+var sanitize = require( 'sanitize-filename' );
 
-var myHooks = function () {
+cucumber.defineSupportCode( function( consumer ) {
 
-  this.After(function (scenario) {
-    if (scenario.isFailed()) {
-      this.driver.takeScreenshot().then(function (data) {
-        var base64Data = data.replace(/^data:image\/png;base64,/, "");
-        fs.writeFile(path.join('screenshots', sanitize(scenario.getName() + ".png").replace(/ /g, "_")), base64Data, 'base64', function (err) {
-          if (err) console.log(err);
-        });
-      });
-    }
-    return this.driver.manage().deleteAllCookies();
-  });
+    consumer.After( function( scenarioResult ) {
+        var that = this;
 
-  this.registerHandler('AfterFeatures', function (event) {
-    return driver.quit();
-  });
+        if( scenarioResult.isFailed() ) {
+            return this.driver.takeScreenshot()
+                .then( function( data ) {
+                    var base64Data = data.replace( /^data:image\/png;base64,/, '' );
+                    var fullPath = path.join( 'screenshots', sanitize( scenarioResult.name + '.png' ).replace( / /g, '_' ) );
 
-  this.registerHandler('BeforeStep', function (step, callback) {
-    var attempt = 0;
-    var totalAttempts = 60;
+                    return new Promise( function( resolve, reject ) {
+                        fs.writeFile( fullPath, base64Data, 'base64', function( err ) {
+                            if( err ) {
+                                console.log( err );
+                                reject( err );
+                            }
 
-    driver.manage().timeouts().implicitlyWait(config.timeouts.wait);
+                            resolve();
+                        } );
+                    } );
+                } )
+                .then( function() {
+                    return clearAndQuit( that.driver );
+                } )
+                .catch( function( err ) {
+                    console.log( err );
+                } );
+        }
 
-    (function tryContinue(i) {
-      driver.findElements(by.xpath('.//div[contains(@class, "blockPage")]'))
-          .then(function (elements) {
-            if (!elements.length) {
-              driver.manage().timeouts().implicitlyWait(config.timeouts.main);
-              callback();
-            } else {
-              if (i < totalAttempts) {
-                setTimeout(function () {
-                  tryContinue(++i);
-                }, 1000);
-              } else {
-                throw new Error('Блокирование страницы индикатором загрузки более чем на ' + totalAttempts + ' сек.');
-              }
-            }
-          });
-    })(1);
-  });
+        return clearAndQuit( this.driver );
+    } );
 
-  try {
-    require('../../helpers/extensions.js').call(this, driver, args);
-  } catch (err) {
-    console.log('Extensions not found');
-  }
+    consumer.Before( function( scenarioResult ) {
+        return this.driver.get( 'http://localhost:' + ( process.myConfig.userOptions.port || '8080' ) );
+    } );
+
+    consumer.registerHandler( 'BeforeStep', function() {
+        var divider = 2;
+        var totalAttempts = 60 * divider;
+        var world = process.world;
+        var secondTime = false;
+
+        return new Promise( function( resolve, reject ) {
+            tryContinue( 0, resolve, reject );
+        } );
+
+        function tryContinue( i, resolve, reject ) {
+            var blocker = world.by.xpath( world.selectors.XPATH.UIBlocker.name() );
+
+            world.driver.findElements( blocker )
+                .then( function( elements ) {
+                    if( !elements.length && secondTime ) {
+                        resolve();
+
+                    } else {
+                        secondTime = true;
+                        if( i < totalAttempts ) {
+                            setTimeout( function() {
+                                tryContinue( i + 1, resolve, reject );
+                            }, 1000 / divider );
+                        } else {
+                            reject( 'Блокирование страницы индикатором загрузки более чем на ' + totalAttempts / divider + ' сек.' );
+                        }
+                    }
+                } );
+        }
+    } );
+
+} );
+
+var clearAndQuit = function( driver ) {
+    return driver.manage().deleteAllCookies()
+        .then( function() {
+            return driver.quit();
+        } );
 };
-
-module.exports = myHooks;
