@@ -13,7 +13,9 @@ var config = process.myConfig;
 var chrome = require( 'selenium-webdriver/chrome' );
 
 webdriver.logging.installConsoleHandler();
-webdriver.logging.getLogger('promise.ControlFlow').setLevel(webdriver.logging.Level.ALL);
+webdriver.logging.getLogger( 'promise.ControlFlow' ).setLevel( webdriver.logging.Level.ALL );
+
+process.env[ 'SELENIUM_PROMISE_MANAGER' ] = 0;
 
 cucumber.defineSupportCode( function( consumer ) {
     consumer.setWorldConstructor( CustomWorld );

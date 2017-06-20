@@ -57,7 +57,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return input.getAttribute( 'value' );
             } )
             .then( function( value ) {
-                that.assert.equal( value, date );
+                return that.assert.equal( value, date );
             } );
     } );
 

@@ -13,16 +13,19 @@ cucumber.defineSupportCode( function( consumer ) {
         var xpath = this.by.xpath( selector );
         var that = this;
 
-        return this.currentView.findElements( xpath ).then( function( elements ) {
-            return elements[ comboBoxLabel.index ].click().then( function() {
-                selector = that.selectors.XPATH.ComboBox.dropDown( value );
-                xpath = that.by.xpath( selector );
+        return this.currentView.findElements( xpath )
+            .then( function( elements ) {
+                return elements[ comboBoxLabel.index ].click()
+                    .then( function() {
+                        selector = that.selectors.XPATH.ComboBox.dropDown( value );
+                        xpath = that.by.xpath( selector );
 
-                return that.driver.findElement( xpath ).then( function( dropDownItem ) {
-                    return dropDownItem.click();
-                } );
+                        return that.driver.findElement( xpath )
+                            .then( function( dropDownItem ) {
+                                return dropDownItem.click();
+                            } );
+                    } );
             } );
-        } );
     } );
 
     consumer.When( /^я выберу в выпадающем списке "([^"]*)" с фильтром "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, filter, value ) {
@@ -73,20 +76,25 @@ cucumber.defineSupportCode( function( consumer ) {
         var xpath = this.by.xpath( selector );
         var that = this;
 
-        return this.currentView.findElements( xpath ).then( function( labels ) {
-            return labels[ comboBoxLabel.index ].getAttribute( 'for' ).then( function( id ) {
-                return that.currentView.findElement( that.by.id( id ) ).then( function( control ) {
-                    selector = that.selectors.XPATH.ComboBox.value();
-                    xpath = that.by.xpath( selector );
+        return this.currentView.findElements( xpath )
+            .then( function( labels ) {
+                return labels[ comboBoxLabel.index ].getAttribute( 'for' )
+                    .then( function( id ) {
+                        return that.currentView.findElement( that.by.id( id ) )
+                            .then( function( control ) {
+                                selector = that.selectors.XPATH.ComboBox.value();
+                                xpath = that.by.xpath( selector );
 
-                    return control.findElement( xpath ).then( function( comboBoxValue ) {
-                        return comboBoxValue.getText().then( function( text ) {
-                            that.assert.equal( text, value );
-                        } );
+                                return control.findElement( xpath )
+                                    .then( function( comboBoxValue ) {
+                                        return comboBoxValue.getText()
+                                            .then( function( text ) {
+                                                return that.assert.equal( text, value );
+                                            } );
+                                    } );
+                            } );
                     } );
-                } );
             } );
-        } );
     } );
 
     consumer.When( /^я очищу выпадающий список "([^"]*)"$/, function( comboBoxLabel ) {

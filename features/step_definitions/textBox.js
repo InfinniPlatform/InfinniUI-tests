@@ -37,7 +37,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return elements[ textBoxLabel.index ].getAttribute( 'value' );
             } )
             .then( function( actualValue ) {
-                that.assert.equal( actualValue, value );
+                return that.assert.equal( actualValue, value );
             } );
     } );
 

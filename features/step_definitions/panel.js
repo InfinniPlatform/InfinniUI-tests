@@ -8,9 +8,10 @@ cucumber.defineSupportCode( function( consumer ) {
         var selector = this.selectors.XPATH.Panel.caption( panelText );
         var xpath = this.by.xpath( selector );
 
-        return this.currentView.findElement( xpath ).then( function( panel ) {
-            return panel.click();
-        } );
+        return this.currentView.findElement( xpath )
+            .then( function( panel ) {
+                return panel.click();
+            } );
     } );
 
 } );

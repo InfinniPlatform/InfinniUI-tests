@@ -12,12 +12,13 @@ cucumber.defineSupportCode( function( consumer ) {
         var selector = this.selectors.XPATH.Button.caption( button.name );
         var xpath = this.by.xpath( selector );
 
-        return this.currentView.findElements( xpath ).then( function( elements ) {
-            if( elements.length < button.index + 1 ) {
-                throw new Error( 'Элемент не найден' );
-            }
-            return elements[ button.index ].click();
-        } );
+        return this.currentView.findElements( xpath )
+            .then( function( elements ) {
+                if( elements.length < button.index + 1 ) {
+                    throw new Error( 'Элемент не найден' );
+                }
+                return elements[ button.index ].click();
+            } );
     } );
 
     consumer.When( /^я нажму на кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {

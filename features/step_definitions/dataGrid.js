@@ -16,31 +16,39 @@ cucumber.defineSupportCode( function( consumer ) {
 
         this.assert.isNumber( rowIndex );
 
-        return this.currentView.findElement( xpath ).then( function( dataGrid ) {
-            selector = that.selectors.XPATH.DataGrid.rows();
-            xpath = that.by.xpath( selector );
-
-            return dataGrid.findElements( xpath ).then( function( rows ) {
-                selector = that.selectors.XPATH.DataGrid.cells();
+        return this.currentView.findElement( xpath )
+            .then( function( dataGrid ) {
+                selector = that.selectors.XPATH.DataGrid.rows();
                 xpath = that.by.xpath( selector );
 
-                if( rows.length < rowIndex + 1 ) {
-                    throw new Error( 'Требуется ' + ( rowIndex + 1 ) + ' строка, всего строк - ' + rows.length );
-                }
+                return dataGrid.findElements( xpath )
+                    .then( function( rows ) {
+                        selector = that.selectors.XPATH.DataGrid.cells();
+                        xpath = that.by.xpath( selector );
 
-                return rows[ rowIndex ].findElements( xpath ).then( function( cells ) {
-                    cells.forEach( function( cell, i ) {
-                        var expected = values[ i ].replace( /''/g, '"' );
-                        cell.getText().then( function( text ) {
-                            text = text.trim();
-                            if( expected != '***' ) {
-                                that.assert.equal( text, expected );
-                            }
-                        } );
+                        if( rows.length < rowIndex + 1 ) {
+                            throw new Error( 'Требуется ' + ( rowIndex + 1 ) + ' строка, всего строк - ' + rows.length );
+                        }
+
+                        return rows[ rowIndex ].findElements( xpath )
+                            .then( function( cells ) {
+                                cells.forEach( function( cell, i ) {
+                                    var expected = values[ i ].replace( /''/g, '"' );
+
+                                    cell.getText()
+                                        .then( function( text ) {
+                                            text = text.trim();
+                                            if( expected != '***' ) {
+                                                return that.assert.equal( text, expected );
+                                            }
+                                        } );
+                                } );
+                            } );
+                    } )
+                    .catch( function( err ) {
+                        console.log( err );
                     } );
-                } );
             } );
-        } );
     } );
 
     consumer.When( /^я отмечу в таблице "([^"]*)" строку под номером "([^"]*)"$/, function( dataGridName, rowIndex ) {
@@ -102,7 +110,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return table.findElements( xpath );
             } )
             .then( function( rows ) {
-                that.assert.equal( rows.length, 0 );
+                return that.assert.equal( rows.length, 0 );
             } );
     } );
 

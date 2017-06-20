@@ -20,29 +20,30 @@ cucumber.defineSupportCode( function( consumer ) {
 
             return new Promise( function( resolve, reject ) {
                 msgs.forEach( function( msg, i ) {
-                    msg.getText().then( function( text ) {
-                        messages[ i ] = that.helpers.ignoreDates( text.trim(), messages[ i ] );
+                    msg.getText()
+                        .then( function( text ) {
+                            messages[ i ] = that.helpers.ignoreDates( text.trim(), messages[ i ] );
 
-                        var linesActual = text.split( '\n' );
-                        var linesExpected = messages[ i ].split( '\\n' );
+                            var linesActual = text.split( '\n' );
+                            var linesExpected = messages[ i ].split( '\\n' );
 
-                        try {
-                            var diff = that._.difference( linesActual, linesExpected );
+                            try {
+                                var diff = that._.difference( linesActual, linesExpected );
 
-                            if( !that._.isArray( diff ) ) {
-                                diff = [ diff ];
+                                if( !that._.isArray( diff ) ) {
+                                    diff = [ diff ];
+                                }
+
+                                that.assert.deepEqual( linesActual, linesExpected, 'Не совпали:\n' + diff.join( '\n' ) + '\n' );
+                            } catch( err ) {
+                                reject( err );
                             }
 
-                            that.assert.deepEqual( linesActual, linesExpected, 'Не совпали:\n' + diff.join( '\n' ) + '\n' );
-                        } catch( err ) {
-                            reject( err );
-                        }
-
-                        if( i === msgs.length - 1 ) {
-                            that.driver.executeScript( '$("#toast-container").remove();' );
-                            resolve();
-                        }
-                    } );
+                            if( i === msgs.length - 1 ) {
+                                that.driver.executeScript( '$("#toast-container").remove();' );
+                                resolve();
+                            }
+                        } );
                 } );
             } );
         } );
@@ -53,11 +54,8 @@ cucumber.defineSupportCode( function( consumer ) {
         var xpath = this.by.xpath( selector );
         var driver = this.driver;
 
-        // driver.manage().timeouts().implicitlyWait( 4500 );
-
         return driver.findElements( xpath )
             .then( function( msgs ) {
-                // driver.manage().timeouts().implicitlyWait( process.myConfig.timeouts.main );
                 if( msgs.length != 0 ) {
                     throw new Error( 'Найдено ' + msgs.length + ' сообщений' );
                 }
