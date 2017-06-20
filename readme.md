@@ -1,6 +1,6 @@
 # infinni-ui-e2e
 
-Фреймворк для создания интеграционных тестов в проектах использующих контролы из [ infinni-ui ](#https://github.com/InfinniPlatform/InfinniUI)
+Фреймворк для создания интеграционных тестов в проектах использующих контролы из [infinni-ui](https://github.com/InfinniPlatform/InfinniUI)
 
 
 ### Инструкция по запуску.
@@ -102,7 +102,7 @@
     }
 ```
 
-* options - параметры для cucumber'a передаются в виде объекта где key это полное имя параметра через стандартный синтаксис cucumber'a, а value это полное значение. Так же можно передавать их в командную строку через стандартный синтаксис cucumber'a. Подробнее про параметры cucumber'a [здесь](#https://github.com/cucumber/cucumber-js/blob/650fa4ef9e597f0e6acd115b316dac88a84624ae/docs/cli.md).
+* options - параметры для cucumber'a передаются в виде объекта где key это полное имя параметра через стандартный синтаксис cucumber'a, а value это полное значение. Так же можно передавать их в командную строку через стандартный синтаксис cucumber'a. Подробнее про параметры cucumber'a [здесь](https://github.com/cucumber/cucumber-js/blob/650fa4ef9e597f0e6acd115b316dac88a84624ae/docs/cli.md).
 
 Пример:
 ```js
@@ -117,7 +117,7 @@
 
 Все параметры всегда доступны через глобальный объект process.myConfig.userOptions.
 
-* browser - позволяет указать браузер который будет использоваться для запуска тестов. Допустимые значения: 'chrome', 'firefox', 'ie', 'opera', 'edge', 'safari', 'phantomjs'. Для работы браузеров необходимо скачать их вебдрайверы [здесь](#http://seleniumhq.github.io/selenium/docs/api/javascript/index.html) и добавть в переменную окружения PATH путь до папки где лежат эти драйвера.
+* browser - позволяет указать браузер который будет использоваться для запуска тестов. Допустимые значения: 'chrome', 'firefox', 'ie', 'opera', 'edge', 'safari', 'phantomjs'. Для работы браузеров необходимо скачать их вебдрайверы [здесь](http://seleniumhq.github.io/selenium/docs/api/javascript/index.html) и добавть в переменную окружения PATH путь до папки где лежат эти драйвера.
 
 * teamcity - запуск тестов на teamcity. Допустимые значения true, false.
 
@@ -153,7 +153,7 @@
 
 # Step definitions
 
-Позволяют создать описание для кастомных шагов, которых нет в infinni-ui. Внутри описания шага в объекте this доступен глобальный объект world. Синтаксис создания описания шага можно посмотреть [здесь](#https://github.com/cucumber/cucumber-js/blob/650fa4ef9e597f0e6acd115b316dac88a84624ae/docs/support_files/step_definitions.md).
+Позволяют создать описание для кастомных шагов, которых нет в infinni-ui. Внутри описания шага в объекте this доступен глобальный объект world. Синтаксис создания описания шага можно посмотреть [здесь](https://github.com/cucumber/cucumber-js/blob/650fa4ef9e597f0e6acd115b316dac88a84624ae/docs/support_files/step_definitions.md).
 
 ### Пример описания шага
 
