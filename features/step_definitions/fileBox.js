@@ -9,6 +9,7 @@ cucumber.defineSupportCode( function( consumer ) {
 
         var selector = this.selectors.XPATH.FileBox.caption( fileBoxName.name );
         var xpath = this.by.xpath( selector );
+        var that = this;
 
         return this.currentView.findElements( xpath )
             .then( function( element ) {
@@ -16,11 +17,11 @@ cucumber.defineSupportCode( function( consumer ) {
                     throw new Error( 'Элемент не найден' );
                 }
 
-                var selector = this.selectors.XPATH.FileBox.removeButton();
-                var xpath = this.by.xpath( selector );
+                var selector = that.selectors.XPATH.FileBox.removeButton();
+                var xpath = that.by.xpath( selector );
 
                 return element[ fileBoxName.index ].findElement( xpath );
-            }.bind( this ) )
+            } )
             .then( function( button ) {
                 return button.click();
             } );

@@ -14,6 +14,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( elements.length <= radioGroup.index ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return elements[ radioGroup.index ].click();
             } );
     } );

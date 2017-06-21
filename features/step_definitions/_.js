@@ -15,38 +15,41 @@ cucumber.defineSupportCode( function( consumer ) {
                 .replace( /''/g, '"' );
         } );
 
-        return this.driver.findElements( xpath ).then( function( msgs ) {
-            that.assert.equal( msgs.length, messages.length, 'Количество сообщений не совпадает' );
+        return this.driver.findElements( xpath )
+            .then( function( msgs ) {
+                that.assert.equal( msgs.length, messages.length, 'Количество сообщений не совпадает' );
 
-            return new Promise( function( resolve, reject ) {
-                msgs.forEach( function( msg, i ) {
-                    msg.getText()
+                return msgChecker( msgs, 0 );
+
+                function msgChecker( msgs, index ) {
+                    var msg = msgs[ index ];
+
+                    return msg.getText()
                         .then( function( text ) {
-                            messages[ i ] = that.helpers.ignoreDates( text.trim(), messages[ i ] );
+                            messages[ index ] = that.helpers.ignoreDates( text.trim(), messages[ index ] );
 
                             var linesActual = text.split( '\n' );
-                            var linesExpected = messages[ i ].split( '\\n' );
+                            var linesExpected = messages[ index ].split( '\\n' );
+                            var diff = that._.difference( linesActual, linesExpected );
 
-                            try {
-                                var diff = that._.difference( linesActual, linesExpected );
-
-                                if( !that._.isArray( diff ) ) {
-                                    diff = [ diff ];
-                                }
-
-                                that.assert.deepEqual( linesActual, linesExpected, 'Не совпали:\n' + diff.join( '\n' ) + '\n' );
-                            } catch( err ) {
-                                reject( err );
+                            if( !that._.isArray( diff ) ) {
+                                diff = [ diff ];
                             }
 
-                            if( i === msgs.length - 1 ) {
+                            that.assert.deepEqual( linesActual, linesExpected, 'Не совпали:\n' + diff.join( '\n' ) + '\n' );
+
+                            if( index === msgs.length - 1 ) {
                                 that.driver.executeScript( '$("#toast-container").remove();' );
-                                resolve();
+                            }
+
+                            index += 1;
+
+                            if( index < msgs.length ) {
+                                return msgChecker( msgs, index );
                             }
                         } );
-                } );
+                }
             } );
-        } );
     } );
 
     consumer.Then( /^система не отобразит валидационных сообщений$/, function() {
@@ -56,7 +59,7 @@ cucumber.defineSupportCode( function( consumer ) {
 
         return driver.findElements( xpath )
             .then( function( msgs ) {
-                if( msgs.length != 0 ) {
+                if( msgs.length !== 0 ) {
                     throw new Error( 'Найдено ' + msgs.length + ' сообщений' );
                 }
             } );
@@ -74,10 +77,11 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( elements.length < elementName.index + 1 ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return elements[ elementName.index ].isDisplayed();
             } )
             .then( function( value ) {
-                that.assert.equal( value, true );
+                return that.assert.equal( value, true );
             } );
     } );
 
@@ -93,10 +97,11 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( elements.length < elementName.index + 1 ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return elements[ elementName.index ].isDisplayed();
             } )
             .then( function( value ) {
-                that.assert.equal( value, false );
+                return that.assert.equal( value, false );
             } );
     } );
 
@@ -124,11 +129,13 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( elements.length < elementName.index + 1 ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return elements[ elementName.index ].getText();
             } )
             .then( function( elementText ) {
                 elementText = elementText.replace( /\n/, '\\n' );
-                that.assert.equal( elementText, text );
+
+                return that.assert.equal( elementText, text );
             } );
     } );
 
@@ -143,16 +150,13 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( elements.length <= elementName.index ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return elements[ elementName.index ].getAttribute( 'class' );
             } )
             .then( function( classes ) {
-                return new Promise( function( resolve, reject ) {
-                    if( classes.indexOf( 'pl-disabled' ) != -1 ) {
-                        resolve();
-                    } else {
-                        reject( new Error( 'Элемент доступен' ) );
-                    }
-                } );
+                if( classes.indexOf( 'pl-disabled' ) === -1 ) {
+                    throw new Error( 'Элемент доступен' );
+                }
             } );
     } );
 

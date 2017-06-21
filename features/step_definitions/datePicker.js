@@ -18,19 +18,26 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( labels.length <= picker.index ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return labels[ picker.index ].getAttribute( 'for' );
             } )
             .then( function( id ) {
                 return that.currentView.findElement( that.by.id( id ) );
             } )
             .then( function( input ) {
-                var arr = [ that.selectAll, that.keys.BACK_SPACE ];
-
-                date.forEach( function( number ) {
-                    arr.push( number );
-                } );
-
-                return input.sendKeys.apply( input, arr );
+                return input.sendKeys( that.selectAll )
+                    .then( function() {
+                        return input.sendKeys( that.keys.BACK_SPACE );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( that.selectAll );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( that.keys.DELETE );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( date.join( '' ) );
+                    } );
             } );
     } );
 
@@ -48,6 +55,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( labels.length <= picker.index ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return labels[ picker.index ].getAttribute( 'for' );
             } )
             .then( function( id ) {
@@ -73,6 +81,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( labels.length <= picker.index ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return labels[ picker.index ].getAttribute( 'for' );
             } )
             .then( function( id ) {

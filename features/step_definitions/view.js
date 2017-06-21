@@ -6,7 +6,9 @@ cucumber.defineSupportCode( function( consumer ) {
 
     consumer.Given( /^я нахожусь на экране "([^"]*)"$/, function( viewName ) {
         var that = this;
-        return this.driver.findElement( this.by.xpath( this.selectors.XPATH.View.self( viewName ) ) )
+        var xpath = this.by.xpath( this.selectors.XPATH.View.self( viewName ) );
+
+        return this.driver.findElement( xpath )
             .then( function( element ) {
                 that.currentView = element;
             } );
@@ -14,7 +16,9 @@ cucumber.defineSupportCode( function( consumer ) {
 
     consumer.Then( /^система отобразит экран "([^"]*)"$/, function( viewName ) {
         var that = this;
-        return this.driver.findElement( this.by.xpath( this.selectors.XPATH.View.self( viewName ) ) )
+        var xpath = this.by.xpath( this.selectors.XPATH.View.self( viewName ) );
+
+        return this.driver.findElement( xpath )
             .then( function( element ) {
                 that.currentView = element;
             } );
@@ -22,7 +26,9 @@ cucumber.defineSupportCode( function( consumer ) {
 
     consumer.Then( /^система отобразит модальное окно "([^"]*)"$/, function( viewName ) {
         var that = this;
-        return this.driver.findElement( this.by.xpath( this.selectors.XPATH.ModalView.header( viewName ) ) )
+        var xpath = this.by.xpath( this.selectors.XPATH.ModalView.header( viewName ) );
+
+        return this.driver.findElement( xpath )
             .then( function( element ) {
                 that.currentView = element;
             } );
@@ -36,6 +42,7 @@ cucumber.defineSupportCode( function( consumer ) {
         return this.driver.findElements( xpath )
             .then( function( elements ) {
                 var lastModalViewCloseButton = that._.last( elements );
+
                 return lastModalViewCloseButton.click();
             } );
     } );
@@ -47,23 +54,16 @@ cucumber.defineSupportCode( function( consumer ) {
 
         message = message.replace( /''/g, '"' );
 
-        // TODO: Выполнять без setTimeout
         return this.driver.findElement( xpath )
             .then( function( messageBox ) {
-                return new Promise( function( resolve, reject ) {
-                    setTimeout( function() {
-                        messageBox.getText()
-                            .then( function( text ) {
-                                message = that.helpers.ignoreNumbers( text.trim(), message ).replace( /\\n/g, '\n' );
-                                try {
-                                    that.assert.equal( text, message );
-                                    resolve();
-                                } catch( err ) {
-                                    reject( err );
-                                }
-                            } );
-                    }, 500 );
-                } );
+                return messageBox.getText();
+            } )
+            .then( function( text ) {
+                message = that.helpers.ignoreNumbers( text.trim(), message ).replace( /\\n/g, '\n' );
+
+                if( text !== message ) {
+                    throw new Error( 'text: "' + text + '" !== message: "' + message + '"' );
+                }
             } );
     } );
 
@@ -73,7 +73,9 @@ cucumber.defineSupportCode( function( consumer ) {
 
         return this.driver.findElement( xpath )
             .then( function( button ) {
-                button.click();
+                return button.click();
+            } )
+            .then( function() {
                 return new Promise( function( resolve ) {
                     setTimeout( resolve, 1000 );
                 } );

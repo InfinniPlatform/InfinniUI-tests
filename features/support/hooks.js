@@ -29,9 +29,6 @@ cucumber.defineSupportCode( function( consumer ) {
                 } )
                 .then( function() {
                     return clearAndQuit( that.driver );
-                } )
-                .catch( function( err ) {
-                    console.log( err );
                 } );
         }
 

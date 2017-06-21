@@ -21,33 +21,40 @@ cucumber.defineSupportCode( function( consumer ) {
                 selector = that.selectors.XPATH.DataGrid.rows();
                 xpath = that.by.xpath( selector );
 
-                return dataGrid.findElements( xpath )
-                    .then( function( rows ) {
-                        selector = that.selectors.XPATH.DataGrid.cells();
-                        xpath = that.by.xpath( selector );
+                return dataGrid.findElements( xpath );
+            } )
+            .then( function( rows ) {
+                selector = that.selectors.XPATH.DataGrid.cells();
+                xpath = that.by.xpath( selector );
 
-                        if( rows.length < rowIndex + 1 ) {
-                            throw new Error( 'Требуется ' + ( rowIndex + 1 ) + ' строка, всего строк - ' + rows.length );
-                        }
+                if( rows.length < rowIndex + 1 ) {
+                    throw new Error( 'Требуется ' + ( rowIndex + 1 ) + ' строка, всего строк - ' + rows.length );
+                }
 
-                        return rows[ rowIndex ].findElements( xpath )
-                            .then( function( cells ) {
-                                cells.forEach( function( cell, i ) {
-                                    var expected = values[ i ].replace( /''/g, '"' );
+                return rows[ rowIndex ].findElements( xpath );
+            } )
+            .then( function( cells ) {
+                return cellChecker( cells, 0 );
 
-                                    cell.getText()
-                                        .then( function( text ) {
-                                            text = text.trim();
-                                            if( expected != '***' ) {
-                                                return that.assert.equal( text, expected );
-                                            }
-                                        } );
-                                } );
-                            } );
-                    } )
-                    .catch( function( err ) {
-                        console.log( err );
-                    } );
+                function cellChecker( cells, index ) {
+                    var cell = cells[ index ];
+                    var expected = values[ index ].replace( /''/g, '"' );
+
+                    return cell.getText()
+                        .then( function( text ) {
+                            text = text.trim();
+
+                            if( expected !== '***' && text !== expected ) {
+                                throw new Error( 'Expected: ' + expected + ' !== text: ' + text );
+                            }
+
+                            index += 1;
+
+                            if( index < cells.length ) {
+                                return cellChecker( cells, index );
+                            }
+                        } );
+                }
             } );
     } );
 
@@ -93,6 +100,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( cells.length <= cellIndex ) {
                     throw new Error( 'Ячейка не найдена' );
                 }
+
                 return cells[ cellIndex ].click();
             } );
     } );
@@ -110,7 +118,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return table.findElements( xpath );
             } )
             .then( function( rows ) {
-                return that.assert.equal( rows.length, 0 );
+                that.assert.equal( rows.length, 0 );
             } );
     } );
 

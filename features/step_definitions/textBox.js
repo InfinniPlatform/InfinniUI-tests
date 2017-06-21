@@ -17,7 +17,13 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( elements.length <= fieldName.index ) {
                     throw new Error( 'Элемент не найден' );
                 }
-                return elements[ fieldName.index ].sendKeys( that.selectAll, that.keys.BACK_SPACE, value );
+
+                var input = elements[ fieldName.index ];
+
+                return input.clear()
+                    .then( function() {
+                        return input.sendKeys( value );
+                    } );
             } );
     } );
 
@@ -34,10 +40,11 @@ cucumber.defineSupportCode( function( consumer ) {
                 if( elements.length <= textBoxLabel.index ) {
                     throw new Error( 'Элемент не найден' );
                 }
+
                 return elements[ textBoxLabel.index ].getAttribute( 'value' );
             } )
             .then( function( actualValue ) {
-                return that.assert.equal( actualValue, value );
+                that.assert.equal( actualValue, value );
             } );
     } );
 

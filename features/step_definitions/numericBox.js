@@ -41,7 +41,10 @@ cucumber.defineSupportCode( function( consumer ) {
                 return that.currentView.findElement( that.by.id( id ) );
             } )
             .then( function( input ) {
-                return input.sendKeys( that.selectAll, value );
+                return input.clear()
+                    .then( function() {
+                        return input.sendKeys( value );
+                    } );
             } );
     } );
 
@@ -50,7 +53,6 @@ cucumber.defineSupportCode( function( consumer ) {
 
         var selector = this.selectors.XPATH.NumericBox.maxButton( fieldLabel.name );
         var xpath = this.by.xpath( selector );
-        var that = this;
 
         return this.currentView.findElements( xpath )
             .then( function( maxButtons ) {
@@ -63,7 +65,6 @@ cucumber.defineSupportCode( function( consumer ) {
 
         var selector = this.selectors.XPATH.NumericBox.minButton( fieldLabel.name );
         var xpath = this.by.xpath( selector );
-        var that = this;
 
         return this.currentView.findElements( xpath )
             .then( function( minButtons ) {
