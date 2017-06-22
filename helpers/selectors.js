@@ -664,6 +664,14 @@ module.exports = {
                 return './../../span[contains(@class, "pl-treeview-node__button")]';
             }
 
+        },
+
+        UIBlocker: {
+
+            name: function() {
+                return '//div[contains(@class, "blockUI")]';
+            }
+
         }
 
     }
