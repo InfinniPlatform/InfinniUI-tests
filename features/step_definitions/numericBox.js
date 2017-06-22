@@ -22,7 +22,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return input.getAttribute( 'value' );
             } )
             .then( function( inputValue ) {
-                that.assert.equal( inputValue, value );
+                return that.assert.equal( inputValue, value );
             } );
     } );
 
@@ -41,7 +41,17 @@ cucumber.defineSupportCode( function( consumer ) {
                 return that.currentView.findElement( that.by.id( id ) );
             } )
             .then( function( input ) {
-                return input.clear()
+                // this is necessary because of inputs with masks
+                return input.sendKeys( that.selectAll )
+                    .then( function() {
+                        return input.sendKeys( that.keys.BACK_SPACE );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( that.selectAll );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( that.keys.DELETE );
+                    } )
                     .then( function() {
                         return input.sendKeys( value );
                     } );

@@ -25,6 +25,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return that.currentView.findElement( that.by.id( id ) );
             } )
             .then( function( input ) {
+                // this is necessary because of inputs with masks
                 return input.sendKeys( that.selectAll )
                     .then( function() {
                         return input.sendKeys( that.keys.BACK_SPACE );
@@ -88,7 +89,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return that.currentView.findElement( that.by.id( id ) );
             } )
             .then( function( input ) {
-                return input.sendKeys( that.selectAll, that.keys.BACK_SPACE );
+                return input.clear();
             } );
     } );
 

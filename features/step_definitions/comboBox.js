@@ -4,27 +4,34 @@ var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
 
-    consumer.When( /^я выберу в выпадающем списке "(.*)" значение "(.*)"$/, function( comboBoxLabel, value ) {
+    consumer.When( /^я выберу в выпадающем списке "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = this.helpers.fixQuotes( value );
 
-        var selector = this.selectors.XPATH.ComboBox.button( comboBoxLabel.name );
-        var xpath = this.by.xpath( selector );
+        var buttonSelector = this.selectors.XPATH.ComboBox.button( comboBoxLabel.name );
+        var buttonXpath = this.by.xpath( buttonSelector );
+        var dropdownSelector = this.selectors.XPATH.ComboBox.dropDown( value );
+        var dropdownXpath = this.by.xpath( dropdownSelector );
         var that = this;
 
-        return this.currentView.findElements( xpath )
+        return this.currentView.findElements( buttonXpath )
             .then( function( elements ) {
                 return elements[ comboBoxLabel.index ].click();
             } )
             .then( function() {
-                selector = that.selectors.XPATH.ComboBox.dropDown( value );
-                xpath = that.by.xpath( selector );
-
-                return that.driver.findElement( xpath );
+                return that.driver.findElement( dropdownXpath );
             } )
-            .then( function( dropDownItem ) {
-                return dropDownItem.click();
+            .then( function( dropdownItem ) {
+                return dropdownItem.click();
+            } )
+            .then( function() {
+                return that.driver.findElements( dropdownXpath );
+            } )
+            .then( function( dropdownItems ) {
+                if( dropdownItems.length ) {
+                    return dropdownItems[ 0 ].click();
+                }
             } );
     } );
 
@@ -33,19 +40,20 @@ cucumber.defineSupportCode( function( consumer ) {
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = this.helpers.fixQuotes( value );
 
-        var selector = this.selectors.XPATH.ComboBox.button( comboBoxLabel.name );
-        var xpath = this.by.xpath( selector );
+        var buttonSelector = this.selectors.XPATH.ComboBox.button( comboBoxLabel.name );
+        var buttonXpath = this.by.xpath( buttonSelector );
+        var filterSelector = this.selectors.XPATH.ComboBox.filter();
+        var filterXpath = this.by.xpath( filterSelector );
+        var dropdownSelector = this.selectors.XPATH.ComboBox.dropDown( value );
+        var dropdownXpath = this.by.xpath( dropdownSelector );
         var that = this;
 
-        return this.currentView.findElements( xpath )
+        return this.currentView.findElements( buttonXpath )
             .then( function( elements ) {
                 return elements[ comboBoxLabel.index ].click();
             } )
             .then( function() {
-                selector = that.selectors.XPATH.ComboBox.filter();
-                xpath = that.by.xpath( selector );
-
-                return that.driver.findElement( xpath );
+                return that.driver.findElement( filterXpath );
             } )
             .then( function( filteredField ) {
                 return filteredField.sendKeys( filter );
@@ -57,13 +65,19 @@ cucumber.defineSupportCode( function( consumer ) {
                 } );
             } )
             .then( function() {
-                selector = that.selectors.XPATH.ComboBox.dropDown( value );
-                xpath = that.by.xpath( selector );
-
-                return that.driver.findElement( xpath );
+                return that.driver.findElement( dropdownXpath );
             } )
             .then( function( dropDownItem ) {
                 return dropDownItem.click();
+            } )
+            .then( function() {
+
+                return that.driver.findElements( dropdownXpath );
+            } )
+            .then( function( dropDownItems ) {
+                if( dropDownItems.length ) {
+                    return dropDownItems[ 0 ].click();
+                }
             } );
     } );
 

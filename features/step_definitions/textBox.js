@@ -20,7 +20,17 @@ cucumber.defineSupportCode( function( consumer ) {
 
                 var input = elements[ fieldName.index ];
 
-                return input.clear()
+                // this is necessary because of inputs with masks
+                return input.sendKeys( that.selectAll )
+                    .then( function() {
+                        return input.sendKeys( that.keys.BACK_SPACE );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( that.selectAll );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( that.keys.DELETE );
+                    } )
                     .then( function() {
                         return input.sendKeys( value );
                     } );
@@ -44,7 +54,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return elements[ textBoxLabel.index ].getAttribute( 'value' );
             } )
             .then( function( actualValue ) {
-                that.assert.equal( actualValue, value );
+                return that.assert.equal( actualValue, value );
             } );
     } );
 

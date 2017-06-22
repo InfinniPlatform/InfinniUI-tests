@@ -104,12 +104,14 @@ var getTag = function( item ) {
 };
 var cucumber = require( 'cucumber' );
 
-cucumber.defineSupportCode( function( consumer ) {
+module.exports = function() {
+    cucumber.defineSupportCode( function( consumer ) {
 
-    consumer.registerHandler( 'BeforeFeature', handleBeforeFeature );
-    consumer.registerHandler( 'AfterFeature', handleAfterFeature );
-    consumer.registerHandler( 'BeforeScenario', handleBeforeScenario );
-    consumer.registerHandler( 'AfterScenario', handleAfterScenario );
-    consumer.registerHandler( 'StepResult', handleStepResult );
+        consumer.registerHandler( 'BeforeFeature', handleBeforeFeature );
+        consumer.registerHandler( 'AfterFeature', handleAfterFeature );
+        consumer.registerHandler( 'BeforeScenario', handleBeforeScenario );
+        consumer.registerHandler( 'AfterScenario', handleAfterScenario );
+        consumer.registerHandler( 'StepResult', handleStepResult );
 
-} );
+    } );
+};
