@@ -9,6 +9,9 @@ module.exports = {
 
     defaultBrowserName: 'chrome',
 
+    // absolute path to screenshots folder
+    screenshotsFolder: path.resolve( __dirname, 'screenshots' ),
+
     screen: {
         width: 1920,
         height: 1080
@@ -17,7 +20,7 @@ module.exports = {
     // browsers options for webdriver
     browsers: {
         chrome: {
-
+            addArguments: [ '--test-type' ]
         },
         firefox: {
 
@@ -35,7 +38,7 @@ module.exports = {
 
         },
         phantomjs: {
-            // binaryPath: 'some_path'
+            // 'phantomjs.binary.path': 'some_path'
         }
     },
 
@@ -46,6 +49,7 @@ module.exports = {
 
     // all user options goes here
     userOptions: {
+        // host: 'http://localhost:8080',
         // browser: 'browser_name',
         // teamcity: true,
         // width: 'some_width',

@@ -38,14 +38,12 @@ cucumber.defineSupportCode( function( consumer ) {
 
                             that.assert.deepEqual( linesActual, linesExpected, 'Не совпали:\n' + diff.join( '\n' ) + '\n' );
 
-                            if( index === msgs.length - 1 ) {
-                                that.driver.executeScript( '$("#toast-container").remove();' );
-                            }
-
                             index += 1;
 
                             if( index < msgs.length ) {
                                 return msgChecker( msgs, index );
+                            } else {
+                                that.driver.executeScript( '$("#toast-container").remove();' );
                             }
                         } );
                 }

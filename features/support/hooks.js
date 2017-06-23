@@ -10,11 +10,11 @@ cucumber.defineSupportCode( function( consumer ) {
     consumer.After( function( scenarioResult ) {
         var that = this;
 
-        if( scenarioResult.isFailed() ) {
+        if( typeof process.myConfig.screenshotsFolder !== 'undefined' && scenarioResult.isFailed() ) {
             return this.driver.takeScreenshot()
                 .then( function( data ) {
                     var base64Data = data.replace( /^data:image\/png;base64,/, '' );
-                    var fullPath = path.join( 'screenshots', sanitize( scenarioResult.name + '.png' ).replace( / /g, '_' ) );
+                    var fullPath = path.join( that.config.screenshotsFolder, sanitize( scenarioResult.scenario.name + '.png' ).replace( / /g, '_' ) );
 
                     return new Promise( function( resolve, reject ) {
                         fs.writeFile( fullPath, base64Data, 'base64', function( err ) {
@@ -35,8 +35,8 @@ cucumber.defineSupportCode( function( consumer ) {
         return clearAndQuit( this.driver );
     } );
 
-    consumer.Before( function( scenarioResult ) {
-        return this.driver.get( 'http://localhost:' + ( process.myConfig.userOptions.port || '8080' ) );
+    consumer.Before( function() {
+        return this.driver.get( process.myConfig.userOptions.host );
     } );
 
     consumer.registerHandler( 'BeforeStep', function() {
@@ -56,7 +56,6 @@ cucumber.defineSupportCode( function( consumer ) {
                 .then( function( elements ) {
                     if( !elements.length && secondTime ) {
                         resolve();
-
                     } else {
                         secondTime = true;
                         if( i < totalAttempts ) {

@@ -29,8 +29,10 @@
             main: 10000,
             wait: 10
         },
+        
+        // absolute path to screenshots folder
+        screenshotsFolder: path.resolve( __dirname, 'screenshots' ),
 
-        //
         defaultBrowserName: 'chrome',
 
         screen: {
@@ -40,14 +42,26 @@
 
         // browsers options for webdriver
         browsers: {
-            chrome: {}, // Not supported yet
-            firefox: {}, // Not supported yet
-            opera: {}, // Not supported yet
-            ie: {}, // Not supported yet
-            edge: {}, // Not supported yet
-            safari: {}, // Not supported yet
+            chrome: {
+                'methodName': 'arguments'
+            },
+            firefox: {
+                'methodName': 'arguments'
+            },
+            opera: {
+                'methodName': 'arguments'
+            },
+            ie: {
+                'methodName': 'arguments'
+            },
+            edge: {
+                'methodName': 'arguments'
+            },
+            safari: {
+                'methodName': 'arguments'
+            },
             phantomjs: {
-                // binaryPath: 'some_path'
+                'optionName': 'value'
             }
         },
 
@@ -59,6 +73,7 @@
 
         // all user options goes here
         userOptions: {
+            // host: 'http://localhost:8080',
             // browser: 'browser_name',
             // teamcity: true,
             // width: 'some_width',
@@ -86,7 +101,7 @@
 
 * screen - разрешение браузера во время тестов.
 
-* browsers - различные настройки для каждого браузера. В данный момент не поддерживается.
+* browsers - различные настройки для каждого браузера. Подробно про настройки каждого браузера [здесь](#browsers-config).
 
 * folders - папки в которых находятся сценарии и дополнительные определения шагов.
 
@@ -95,6 +110,7 @@
 Пример:
 ```js
     userOptions: {
+        host: 'http://localhost:8080',
         browser: 'opera',
         teamcity: true,
         width: '2500',
@@ -195,3 +211,15 @@
 * keys - экземпляр webdriver.Key;
 * selectAll - метод
 * currentView - текущая вьюха;
+
+# Browsers config
+
+Ключом в объекте является название метода, а значение будет передано в метод как аргумент.
+
+* [Chrome](http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/chrome_exports_Options.html)
+* [Firefox](http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/firefox/index_exports_Options.html)
+* [Opera](http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/opera_exports_Options.html)
+* [Internet explorer](http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/ie_exports_Options.html)
+* [Edge](http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/edge_exports_Options.html)
+* [Safari](http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/safari_exports_Options.html)
+* [Phantomjs](http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/phantomjs.html)

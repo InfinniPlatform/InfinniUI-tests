@@ -89,7 +89,16 @@ cucumber.defineSupportCode( function( consumer ) {
                 return that.currentView.findElement( that.by.id( id ) );
             } )
             .then( function( input ) {
-                return input.clear();
+                return input.sendKeys( that.selectAll )
+                    .then( function() {
+                        return input.sendKeys( that.keys.BACK_SPACE );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( that.selectAll );
+                    } )
+                    .then( function() {
+                        return input.sendKeys( that.keys.DELETE );
+                    } );
             } );
     } );
 

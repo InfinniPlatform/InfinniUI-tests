@@ -10,7 +10,15 @@ var selectors = require( '../../helpers/selectors' );
 var helpers = require( '../../helpers/helpers' );
 var config = process.myConfig;
 
-var chrome = require( 'selenium-webdriver/chrome' );
+var browsers = {
+    chrome: require( 'selenium-webdriver/chrome' ),
+    firefox: require( 'selenium-webdriver/firefox' ),
+    opera: require( 'selenium-webdriver/opera' ),
+    ie: require( 'selenium-webdriver/ie' ),
+    edge: require( 'selenium-webdriver/edge' ),
+    safari: require( 'selenium-webdriver/safari' ),
+    phantomjs: require( 'selenium-webdriver/phantomjs' )
+};
 
 webdriver.logging.installConsoleHandler();
 webdriver.logging.getLogger( 'promise.ControlFlow' ).setLevel( webdriver.logging.Level.ALL );
@@ -26,14 +34,14 @@ cucumber.defineSupportCode( function( consumer ) {
  * @constructor
  */
 var CustomWorld = function( consumer ) {
-    var screenshotPath = 'screenshots';
+    var screenshotPath = config.screenshotsFolder;
 
     this.attach = consumer.attach;
     this.parametrs = consumer.parametrs;
 
     this.config = config;
     this.webdriver = webdriver;
-    this.driver = buildDriver( config.userOptions.browser || config.defaultBrowserName );
+    this.driver = buildDriver( config.userOptions.browser || config.defaultBrowserName, config );
     this.by = webdriver.By;
     this.selectors = selectors;
     this.helpers = helpers;
@@ -52,7 +60,7 @@ var CustomWorld = function( consumer ) {
         this.driver.manage().window().setSize( width, height );
     }
 
-    if( !fs.existsSync( screenshotPath ) ) {
+    if( typeof screenshotPath !== 'undefined' && !fs.existsSync( screenshotPath ) ) {
         fs.mkdirSync( screenshotPath );
     }
 
@@ -63,38 +71,40 @@ var CustomWorld = function( consumer ) {
  *
  * @param driver
  * @param browserName
+ * @param browserConfig
  * @returns {Builder}
  */
-var setOptionsForDriver = function( driver, browserName ) {
+var setOptionsForDriver = function( driver, browserName, browserConfig ) {
+    var options = createBrowserConfig( browserName, browserConfig );
+
     switch( browserName ) {
         case 'chrome':
-            var options = new chrome.Options().addArguments( '--ignore-certificate-errors' );
             driver.setChromeOptions( options );
             break;
         case 'firefox':
-            driver.setFirefoxOptions();
+            driver.setFirefoxOptions( options );
             break;
         case 'opera':
-            driver.setOperaOptions();
+            driver.setOperaOptions( options );
             break;
         case 'edge':
-            driver.setEdgeOptions();
+            driver.setEdgeOptions( options );
             break;
         case 'ie':
-            driver.setIeOptions();
+            driver.setIeOptions( options );
             break;
         case 'safari':
-            driver.setSafariOptions();
+            driver.setSafariOptions( options );
             break;
         case 'phantomjs':
-            driver.set( 'phantomjs.binary.path', config.browsers[ browserName ].binaryPath );
+            for( var key in options ) {
+                if( options.hasOwnProperty( key ) ) {
+                    driver.set( key, options[ key ] );
+                }
+            }
             break;
         default:
-            if( browserName ) {
-                throw new Error( 'Invalid platform ' + ( browserName || '' ) + '' );
-            } else {
-                return setOptionsForDriver( driver, config.defaultBrowserName );
-            }
+            break;
     }
 
     return driver;
@@ -103,12 +113,40 @@ var setOptionsForDriver = function( driver, browserName ) {
 /**
  *
  * @param browserName
+ * @param config
  * @returns {Builder}
  */
-var buildDriver = function( browserName ) {
-    var driver = new webdriver.Builder().forBrowser( browserName, config.browsers[ browserName ].version );
+var buildDriver = function( browserName, config ) {
+    var browserConfig = config.browsers[ browserName ];
+    var driver = new webdriver.Builder().forBrowser( browserName, browserConfig.version );
 
-    driver = setOptionsForDriver( driver, browserName );
+    if( typeof browsers[ browserName ] === 'undefined' ) {
+        throw new Error( 'Invalid platform ' + ( browserName || '' ) + '' );
+    }
+
+    driver = setOptionsForDriver( driver, browserName, browserConfig );
 
     return driver.build();
+};
+
+/**
+ *
+ * @param name
+ * @param config
+ * @returns {Options}
+ */
+var createBrowserConfig = function( name, config ) {
+    if( name === 'phantomjs' ) {
+        return config;
+    }
+
+    var options = new browsers[ name ].Options();
+
+    for( var key in config ) {
+        if( config.hasOwnProperty( key ) && typeof options[ key ] === 'function' ) {
+            options[ key ]( config[ key ] );
+        }
+    }
+
+    return options;
 };

@@ -26,6 +26,9 @@ cucumber.defineSupportCode( function( consumer ) {
                         return input.sendKeys( that.keys.BACK_SPACE );
                     } )
                     .then( function() {
+                        return input.clear();
+                    } )
+                    .then( function() {
                         return input.sendKeys( that.selectAll );
                     } )
                     .then( function() {
