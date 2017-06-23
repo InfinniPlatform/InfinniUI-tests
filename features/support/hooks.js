@@ -36,7 +36,14 @@ cucumber.defineSupportCode( function( consumer ) {
     } );
 
     consumer.Before( function() {
-        return this.driver.get( process.myConfig.userOptions.host );
+        var that = this;
+
+        return this.driver.get( process.myConfig.userOptions.host )
+            .then( function() {
+                that.driver.manage().setTimeouts( {
+                    implicit: that.config.timeouts.main
+                } );
+            } );
     } );
 
     consumer.registerHandler( 'BeforeStep', function() {
@@ -45,9 +52,14 @@ cucumber.defineSupportCode( function( consumer ) {
         var world = process.world;
         var secondTime = false;
 
-        return new Promise( function( resolve, reject ) {
-            tryContinue( 0, resolve, reject );
-        } );
+        return world.driver.manage().setTimeouts( {
+                implicit: 0
+            } )
+            .then( function() {
+                return new Promise( function( resolve, reject ) {
+                    tryContinue( 0, resolve, reject );
+                } );
+            } );
 
         function tryContinue( i, resolve, reject ) {
             var blocker = world.by.xpath( world.selectors.XPATH.UIBlocker.name() );
@@ -55,7 +67,13 @@ cucumber.defineSupportCode( function( consumer ) {
             world.driver.findElements( blocker )
                 .then( function( elements ) {
                     if( !elements.length && secondTime ) {
-                        resolve();
+
+                        return world.driver.manage().setTimeouts( {
+                                implicit: world.config.timeouts.main
+                            } )
+                            .then( function() {
+                                resolve();
+                            } );
                     } else {
                         secondTime = true;
                         if( i < totalAttempts ) {

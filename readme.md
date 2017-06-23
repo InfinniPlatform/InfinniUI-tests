@@ -97,6 +97,8 @@
 
 * timeouts - установка дополнительных таумаутов.
 
+* screenshotsFolder - абсолютный путь до директории куда помещать скриншоты при ошибках
+
 * defaultBrowserName - браузер по умолчанию.
 
 * screen - разрешение браузера во время тестов.
@@ -114,7 +116,7 @@
         browser: 'opera',
         teamcity: true,
         width: '2500',
-        height: '1440',
+        height: '1440'
     }
 ```
 
@@ -132,6 +134,8 @@
 # User options
 
 Все параметры всегда доступны через глобальный объект process.myConfig.userOptions.
+
+* host - адрес сервиса
 
 * browser - позволяет указать браузер который будет использоваться для запуска тестов. Допустимые значения: 'chrome', 'firefox', 'ie', 'opera', 'edge', 'safari', 'phantomjs'. Для работы браузеров необходимо скачать их вебдрайверы [здесь](http://seleniumhq.github.io/selenium/docs/api/javascript/index.html) и добавить в переменную окружения PATH путь до папки где лежат эти драйвера.
 
