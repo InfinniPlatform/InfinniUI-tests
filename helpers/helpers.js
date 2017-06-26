@@ -240,6 +240,17 @@ var fixStepResult = function( step ) {
     };
 };
 
+/**
+ * @description create Promise delay for passed time
+ * @param time
+ * @returns {*}
+ */
+var delay = function( time ) {
+    return new Promise( function( resolve, reject ) {
+        setTimeout( resolve, time || 10 );
+    } );
+};
+
 module.exports = {
     parseElement: parseElement,
     parseDate: parseDate,
@@ -255,5 +266,6 @@ module.exports = {
     write: write,
     fixStepResult: fixStepResult,
     log: log,
-    logError: logError
+    logError: logError,
+    delay: delay
 };

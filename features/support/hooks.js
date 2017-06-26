@@ -10,11 +10,12 @@ cucumber.defineSupportCode( function( consumer ) {
     consumer.After( function( scenarioResult ) {
         var that = this;
 
-        if( typeof process.myConfig.screenshotsFolder !== 'undefined' && scenarioResult.isFailed() ) {
+        if( typeof that.config.screenshotsFolder !== 'undefined' && scenarioResult.isFailed() ) {
             return this.driver.takeScreenshot()
                 .then( function( data ) {
                     var base64Data = data.replace( /^data:image\/png;base64,/, '' );
-                    var fullPath = path.join( that.config.screenshotsFolder, sanitize( scenarioResult.scenario.name + '.png' ).replace( / /g, '_' ) );
+                    var imageName = sanitize( scenarioResult.scenario.name + '.png' ).replace( / /g, '_' );
+                    var fullPath = path.join( that.config.screenshotsFolder, imageName );
 
                     return new Promise( function( resolve, reject ) {
                         fs.writeFile( fullPath, base64Data, 'base64', function( err ) {

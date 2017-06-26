@@ -70,15 +70,14 @@ cucumber.defineSupportCode( function( consumer ) {
     consumer.When( /^я нажму в окне-сообщении на кнопку "([^"]*)"$/, function( buttonText ) {
         var selector = this.selectors.XPATH.ModalView.messageBoxButton( buttonText );
         var xpath = this.by.xpath( selector );
+        var that = this;
 
         return this.driver.findElement( xpath )
             .then( function( button ) {
                 return button.click();
             } )
             .then( function() {
-                return new Promise( function( resolve ) {
-                    setTimeout( resolve, 1000 );
-                } );
+                return that.helpers.delay( 1000 );
             } );
     } );
 

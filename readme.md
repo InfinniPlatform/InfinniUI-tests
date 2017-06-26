@@ -29,7 +29,7 @@
             main: 10000,
             wait: 10
         },
-        
+
         // absolute path to screenshots folder
         screenshotsFolder: path.resolve( __dirname, 'screenshots' ),
 
@@ -66,7 +66,7 @@
         },
 
         // folder for search by cucumber
-        // add here full path for your 'features' folder
+        // add here absolute path for your 'features' folder
         folders: [
             path.resolve( __dirname, 'features' ) // folder with default files will add automitically
         ],

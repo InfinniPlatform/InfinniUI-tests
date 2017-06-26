@@ -174,9 +174,7 @@ cucumber.defineSupportCode( function( consumer ) {
     } );
 
     consumer.When( /^выполнится задержка на "([^"]*)" секунд$/, function( time ) {
-        return new Promise( function( resolve ) {
-            setTimeout( resolve, parseInt( time, 10 ) * 1000 );
-        } );
+        return this.helpers.delay( parseInt( time, 10 ) * 1000 );
     } );
 
 } );

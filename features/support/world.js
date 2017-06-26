@@ -23,6 +23,7 @@ var browsers = {
 webdriver.logging.installConsoleHandler();
 webdriver.logging.getLogger( 'promise.ControlFlow' ).setLevel( webdriver.logging.Level.ALL );
 
+// for using promises
 process.env[ 'SELENIUM_PROMISE_MANAGER' ] = 0;
 
 cucumber.defineSupportCode( function( consumer ) {

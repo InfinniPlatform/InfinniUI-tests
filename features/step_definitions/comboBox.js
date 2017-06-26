@@ -60,9 +60,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } )
             .then( function() {
                 // TODO: Индиктор загрузки может блокировать элемент
-                return new Promise( function( resolve ) {
-                    setTimeout( resolve, 1000 );
-                } );
+                return that.helpers.delay( 1000 );
             } )
             .then( function() {
                 return that.driver.findElement( dropdownXpath );
