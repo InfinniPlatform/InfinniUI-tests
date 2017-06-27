@@ -41,7 +41,7 @@ cucumber.defineSupportCode( function( consumer ) {
 
         return this.driver.get( process.myConfig.userOptions.host )
             .then( function() {
-                that.driver.manage().setTimeouts( {
+                return that.driver.manage().setTimeouts( {
                     implicit: that.config.timeouts.main
                 } );
             } );

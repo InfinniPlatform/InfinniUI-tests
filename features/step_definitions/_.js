@@ -173,7 +173,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^выполнится задержка на "([^"]*)" секунд$/, function( time ) {
+    consumer.When( /^замри на "([^"]*)"$/, function( time ) {
         return this.helpers.delay( parseInt( time, 10 ) * 1000 );
     } );
 
