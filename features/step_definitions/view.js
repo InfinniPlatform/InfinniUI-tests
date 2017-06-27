@@ -3,8 +3,11 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
+    var Then = consumer.Then;
+    var Given = consumer.Given;
 
-    consumer.Given( /^я нахожусь на экране "([^"]*)"$/, function( viewName ) {
+    Given( /^я нахожусь на экране "([^"]*)"$/, function( viewName ) {
         var that = this;
         var xpath = this.by.xpath( this.selectors.XPATH.View.self( viewName ) );
 
@@ -14,7 +17,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.Then( /^система отобразит экран "([^"]*)"$/, function( viewName ) {
+    Then( /^система отобразит экран "([^"]*)"$/, function( viewName ) {
         var that = this;
         var xpath = this.by.xpath( this.selectors.XPATH.View.self( viewName ) );
 
@@ -24,7 +27,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.Then( /^система отобразит модальное окно "([^"]*)"$/, function( viewName ) {
+    Then( /^система отобразит модальное окно "([^"]*)"$/, function( viewName ) {
         var that = this;
         var xpath = this.by.xpath( this.selectors.XPATH.ModalView.header( viewName ) );
 
@@ -34,7 +37,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я закрою текущее модальное окно$/, function() {
+    When( /^я закрою текущее модальное окно$/, function() {
         var selector = this.selectors.XPATH.ModalView.closeButton();
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -47,7 +50,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.Then( /^система отобразит окно-сообщение "([^"]*)"$/, function( message ) {
+    Then( /^система отобразит окно-сообщение "([^"]*)"$/, function( message ) {
         var selector = this.selectors.XPATH.ModalView.message();
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -67,7 +70,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я нажму в окне-сообщении на кнопку "([^"]*)"$/, function( buttonText ) {
+    When( /^я нажму в окне-сообщении на кнопку "([^"]*)"$/, function( buttonText ) {
         var selector = this.selectors.XPATH.ModalView.messageBoxButton( buttonText );
         var xpath = this.by.xpath( selector );
         var that = this;

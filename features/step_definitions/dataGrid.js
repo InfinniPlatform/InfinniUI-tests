@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я увижу в таблице "([^"]*)" строку под номером "([^"]*)" со значением "([^"]*)"$/, function( dataGridName, rowIndex, values ) {
+    When( /^я увижу в таблице "([^"]*)" строку под номером "([^"]*)" со значением "([^"]*)"$/, function( dataGridName, rowIndex, values ) {
         var selector = this.selectors.XPATH.DataGrid.body( dataGridName );
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -58,7 +59,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я отмечу в таблице "([^"]*)" строку под номером "([^"]*)"$/, function( dataGridName, rowIndex ) {
+    When( /^я отмечу в таблице "([^"]*)" строку под номером "([^"]*)"$/, function( dataGridName, rowIndex ) {
         var selector = this.selectors.XPATH.DataGrid.body( dataGridName );
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -89,7 +90,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я нажму в заголовке таблицы "([^"]*)" на ячейку под номером "([^"]*)"$/, function( tableName, cellIndex ) {
+    When( /^я нажму в заголовке таблицы "([^"]*)" на ячейку под номером "([^"]*)"$/, function( tableName, cellIndex ) {
         var selector = this.selectors.XPATH.DataGrid.headerCells( tableName );
         var xpath = this.by.xpath( selector );
 
@@ -105,7 +106,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я увижу пустую таблицу "([^"]*)"$/, function( tableName ) {
+    When( /^я увижу пустую таблицу "([^"]*)"$/, function( tableName ) {
         var selector = this.selectors.XPATH.DataGrid.body( tableName );
         var xpath = this.by.xpath( selector );
         var that = this;

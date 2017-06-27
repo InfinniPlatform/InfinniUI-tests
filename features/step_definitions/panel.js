@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я нажму на панель "([^"]*)"$/, function( panelText ) {
+    When( /^я нажму на панель "([^"]*)"$/, function( panelText ) {
         var selector = this.selectors.XPATH.Panel.caption( panelText );
         var xpath = this.by.xpath( selector );
 

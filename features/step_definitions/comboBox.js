@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я выберу в выпадающем списке "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, value ) {
+    When( /^я выберу в выпадающем списке "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = this.helpers.fixQuotes( value );
@@ -35,7 +36,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я выберу в выпадающем списке "([^"]*)" с фильтром "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, filter, value ) {
+    When( /^я выберу в выпадающем списке "([^"]*)" с фильтром "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, filter, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = this.helpers.fixQuotes( value );
@@ -79,7 +80,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^значение в выпадающем списке "([^"]*)" равно "([^"]*)"$/, function( comboBoxLabel, value ) {
+    When( /^значение в выпадающем списке "([^"]*)" равно "([^"]*)"$/, function( comboBoxLabel, value ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
         value = value.replace( /''/g, '"' );
@@ -109,7 +110,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я очищу выпадающий список "([^"]*)"$/, function( comboBoxLabel ) {
+    When( /^я очищу выпадающий список "([^"]*)"$/, function( comboBoxLabel ) {
         comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
         comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
 

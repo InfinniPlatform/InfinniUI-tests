@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я удалю прикрепленный файл из поля "([^"]*)"$/, function( fileBoxName ) {
+    When( /^я удалю прикрепленный файл из поля "([^"]*)"$/, function( fileBoxName ) {
         fileBoxName = this.helpers.parseElement( fileBoxName );
 
         var selector = this.selectors.XPATH.FileBox.caption( fileBoxName.name );

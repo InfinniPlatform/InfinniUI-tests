@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я введу в поле типа дата "([^"]*)" значение "([^"]*)"$/, function( pickerText, date ) {
+    When( /^я введу в поле типа дата "([^"]*)" значение "([^"]*)"$/, function( pickerText, date ) {
         var picker = this.helpers.parseElement( pickerText );
 
         var selector = this.selectors.XPATH.DatePicker.caption( picker.name );
@@ -42,7 +43,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^значение в поле типа дата "([^"]*)" равно "([^"]*)"$/, function( pickerText, date ) {
+    When( /^значение в поле типа дата "([^"]*)" равно "([^"]*)"$/, function( pickerText, date ) {
         var picker = this.helpers.parseElement( pickerText );
 
         var selector = this.selectors.XPATH.DatePicker.caption( picker.name );
@@ -70,7 +71,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я очищу поле типа дата "([^"]*)"$/, function( pickerText ) {
+    When( /^я очищу поле типа дата "([^"]*)"$/, function( pickerText ) {
         var picker = this.helpers.parseElement( pickerText );
 
         var selector = this.selectors.XPATH.DatePicker.caption( picker.name );

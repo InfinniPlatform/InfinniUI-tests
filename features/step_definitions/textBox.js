@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я введу в текстовое поле "([^"]*)" значение "([^"]*)"$/, function( fieldName, value ) {
+    When( /^я введу в текстовое поле "([^"]*)" значение "([^"]*)"$/, function( fieldName, value ) {
         value = value.replace( /''/g, '"' );
         fieldName = this.helpers.parseElement( fieldName );
 
@@ -40,7 +41,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^значение в текстовом поле "([^"]*)" равно "([^"]*)"$/, function( textBoxLabel, value ) {
+    When( /^значение в текстовом поле "([^"]*)" равно "([^"]*)"$/, function( textBoxLabel, value ) {
         textBoxLabel = this.helpers.parseElement( textBoxLabel );
         value = value.replace( /''/g, '"' );
 

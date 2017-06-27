@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я поменяю значение флага "([^"]*)"$/, function( checkBoxName ) {
+    When( /^я поменяю значение флага "([^"]*)"$/, function( checkBoxName ) {
         checkBoxName = this.helpers.parseElement( checkBoxName );
 
         var selector = this.selectors.XPATH.CheckBox.self( checkBoxName.name );
@@ -19,7 +20,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^флаг "([^"]*)" будет иметь значение "([^"]*)"$/, function( checkBoxName, value ) {
+    When( /^флаг "([^"]*)" будет иметь значение "([^"]*)"$/, function( checkBoxName, value ) {
         checkBoxName = this.helpers.parseElement( checkBoxName );
         value = JSON.parse( value );
 

@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я выберу вариант "([^"]*)" в радиогруппе "([^"]*)"$/, function( variantText, radioGroupName ) {
+    When( /^я выберу вариант "([^"]*)" в радиогруппе "([^"]*)"$/, function( variantText, radioGroupName ) {
         var radioGroup = this.helpers.parseElement( radioGroupName );
         var selector = this.selectors.XPATH.RadioGroup.item( radioGroup.name, variantText );
         var xpath = this.by.xpath( selector );

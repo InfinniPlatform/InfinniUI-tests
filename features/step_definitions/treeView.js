@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я раскрою\\закрою в дереве "([^"]*)" элемент "([^"]*)"$/, function( treeViewName, elementText ) {
+    When( /^я раскрою\\закрою в дереве "([^"]*)" элемент "([^"]*)"$/, function( treeViewName, elementText ) {
         var selector = this.selectors.XPATH.TreeView.name( treeViewName );
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -27,7 +28,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я нажму в дереве "([^"]*)" на элемент "([^"]*)"$/, function( treeViewName, elementText ) {
+    When( /^я нажму в дереве "([^"]*)" на элемент "([^"]*)"$/, function( treeViewName, elementText ) {
         var selector = this.selectors.XPATH.TreeView.name( treeViewName );
         var xpath = this.by.xpath( selector );
         var that = this;

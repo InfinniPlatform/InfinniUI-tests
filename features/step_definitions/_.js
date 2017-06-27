@@ -3,8 +3,10 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
+    var Then = consumer.Then;
 
-    consumer.Then( /^система отобразит список валидационных сообщений: (.*?)$/, function( messages ) {
+    Then( /^система отобразит список валидационных сообщений: (.*?)$/, function( messages ) {
         var selector = this.selectors.XPATH.Toastr.messages();
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -50,7 +52,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.Then( /^система не отобразит валидационных сообщений$/, function() {
+    Then( /^система не отобразит валидационных сообщений$/, function() {
         var selector = this.selectors.XPATH.Toastr.messages();
         var xpath = this.by.xpath( selector );
         var driver = this.driver;
@@ -63,7 +65,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я увижу элемент "([^"]*)"$/, function( elementName ) {
+    When( /^я увижу элемент "([^"]*)"$/, function( elementName ) {
         elementName = this.helpers.parseElement( elementName );
 
         var selector = this.selectors.XPATH.Element.byName( elementName.name );
@@ -83,7 +85,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я не увижу элемент "([^"]*)"$/, function( elementName ) {
+    When( /^я не увижу элемент "([^"]*)"$/, function( elementName ) {
         elementName = this.helpers.parseElement( elementName );
 
         var selector = this.selectors.XPATH.Element.byName( elementName.name );
@@ -103,7 +105,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я нажму на клавишу "([^"]*)"$/, function( key ) {
+    When( /^я нажму на клавишу "([^"]*)"$/, function( key ) {
         var keys = this._.map( key.split( '+' ), function( k ) {
             return this.keys[ k.trim().toUpperCase() ];
         }.bind( this ) );
@@ -114,7 +116,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я увижу элемент "([^"]*)" с текстом "([^"]*)"$/, function( elementName, text ) {
+    When( /^я увижу элемент "([^"]*)" с текстом "([^"]*)"$/, function( elementName, text ) {
         elementName = this.helpers.parseElement( elementName );
         text = text.replace( /''/g, '"' );
 
@@ -137,7 +139,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^элемент "([^"]*)" будет недоступным$/, function( elementName ) {
+    When( /^элемент "([^"]*)" будет недоступным$/, function( elementName ) {
         elementName = this.helpers.parseElement( elementName );
 
         var selector = this.selectors.XPATH.Element.byName( elementName.name );
@@ -158,7 +160,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я нажму на элемент "([^"]*)"$/, function( elementName ) {
+    When( /^я нажму на элемент "([^"]*)"$/, function( elementName ) {
         elementName = this.helpers.parseElement( elementName );
 
         var selector = this.selectors.XPATH.Element.byName( elementName.name );
@@ -173,7 +175,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^выполнится задержка на "([^"]*)" секунд$/, function( time ) {
+    When( /^выполнится задержка на "([^"]*)" секунд$/, function( time ) {
         return this.helpers.delay( parseInt( time, 10 ) * 1000 );
     } );
 

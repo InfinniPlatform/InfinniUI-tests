@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^я нажму на кнопку "([^"]*)"$/, function( buttonText ) {
+    When( /^я нажму на кнопку "([^"]*)"$/, function( buttonText ) {
         var button = this.helpers.parseElement( buttonText );
 
         button.name = this.helpers.fixQuotes( button.name );
@@ -21,7 +22,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я нажму на кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {
+    When( /^я нажму на кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {
         var selector = this.selectors.XPATH.Button.popupCaption( popupListText );
         var xpath = this.by.xpath( selector );
         var that = this;
@@ -41,7 +42,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я не увижу кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {
+    When( /^я не увижу кнопку "([^"]*)" в выпадающем списке кнопок "([^"]*)"$/, function( buttonText, popupListText ) {
         var selector = this.selectors.XPATH.Button.popupCaption( popupListText );
         var xpath = this.by.xpath( selector );
         var that = this;

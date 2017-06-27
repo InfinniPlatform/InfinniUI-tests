@@ -3,8 +3,9 @@
 var cucumber = require( 'cucumber' );
 
 cucumber.defineSupportCode( function( consumer ) {
+    var When = consumer.When;
 
-    consumer.When( /^значение в числовом поле "([^"]*)" равно "([^"]*)"$/, function( fieldLabel, value ) {
+    When( /^значение в числовом поле "([^"]*)" равно "([^"]*)"$/, function( fieldLabel, value ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );
 
         var selector = this.selectors.XPATH.NumericBox.caption( fieldLabel.name );
@@ -26,7 +27,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я введу в числовое поле "([^"]*)" значение "([^"]*)"$/, function( fieldLabel, value ) {
+    When( /^я введу в числовое поле "([^"]*)" значение "([^"]*)"$/, function( fieldLabel, value ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );
 
         var selector = this.selectors.XPATH.NumericBox.caption( fieldLabel.name );
@@ -61,7 +62,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я увеличу значение в числовом поле "([^"]*)"$/, function( fieldLabel ) {
+    When( /^я увеличу значение в числовом поле "([^"]*)"$/, function( fieldLabel ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );
 
         var selector = this.selectors.XPATH.NumericBox.maxButton( fieldLabel.name );
@@ -73,7 +74,7 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
-    consumer.When( /^я уменьшу значение в числовом поле "([^"]*)"$/, function( fieldLabel ) {
+    When( /^я уменьшу значение в числовом поле "([^"]*)"$/, function( fieldLabel ) {
         fieldLabel = this.helpers.parseElement( fieldLabel );
 
         var selector = this.selectors.XPATH.NumericBox.minButton( fieldLabel.name );
