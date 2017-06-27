@@ -48,6 +48,11 @@ var merge = function( dest, source ) {
             var paramDest = dest[ key ];
 
             if( Array.isArray( paramSrc ) ) {
+                if( typeof paramDest === 'undefined' ) {
+                    dest[ key ] = [];
+                    paramDest = dest[ key ];
+                }
+
                 for( var i = 0, ii = paramSrc.length; i < ii; i += 1 ) {
                     if( paramDest.indexOf( paramSrc[ i ] ) === -1 ) {
                         paramDest.push( paramSrc[ i ] );
