@@ -17,26 +17,18 @@ module.exports = {
         height: 1080
     },
 
+    checkLoader: true,
+
     // browsers options for webdriver
     browsers: {
         chrome: {
             addArguments: [ '--test-type' ]
         },
-        firefox: {
-
-        },
-        opera: {
-
-        },
-        ie: {
-
-        },
-        edge: {
-
-        },
-        safari: {
-
-        },
+        firefox: {},
+        opera: {},
+        ie: {},
+        edge: {},
+        safari: {},
         phantomjs: {
             // 'phantomjs.binary.path': 'some_path'
         }

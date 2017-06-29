@@ -9,7 +9,7 @@ var cliConfig = {};
 var addCustomConfigFile = function( param ) {
     try {
         customConfig = require( '../..' + param.slice( configFileOpt.length ) );
-    } catch ( e ) {
+    } catch( e ) {
         console.error( e );
     }
 };
@@ -41,28 +41,31 @@ var clearArgvs = function() {
     }
 };
 
-var merge = function( dest, source ) {
+var merge = function( source, dest ) {
     for( var key in source ) {
-        if( source.hasOwnProperty( key ) ) {
-            var paramSrc = source[ key ];
-            var paramDest = dest[ key ];
+        if( !source.hasOwnProperty( key ) ) {
+            continue;
+        }
 
-            if( Array.isArray( paramSrc ) ) {
-                if( typeof paramDest === 'undefined' ) {
-                    dest[ key ] = [];
-                    paramDest = dest[ key ];
-                }
+        var paramSrc = source[ key ];
+        var paramDest = dest[ key ];
 
-                for( var i = 0, ii = paramSrc.length; i < ii; i += 1 ) {
-                    if( paramDest.indexOf( paramSrc[ i ] ) === -1 ) {
-                        paramDest.push( paramSrc[ i ] );
-                    }
+        if( typeof paramDest === 'undefined' ) {
+            dest[ key ] = paramSrc;
+            continue;
+        }
+
+        if( Array.isArray( paramSrc ) && Array.isArray( paramDest ) ) {
+            for( var i = 0, ii = paramSrc.length; i < ii; i++ ) {
+                if( paramDest.indexOf( paramSrc[ i ] ) === -1 ) {
+                    paramDest.push( paramSrc[ i ] );
                 }
-            } else if( typeof paramSrc === 'object' && paramSrc !== null ) {
-                dest[ key ] = merge( paramDest, paramSrc );
-            } else if( paramSrc !== paramDest ) {
-                dest[ key ] = paramSrc;
             }
+            continue;
+        }
+
+        if( typeof paramSrc === 'object' && typeof paramDest === 'object' ) {
+            dest[ key ] = merge( paramSrc, paramDest );
         }
     }
 
@@ -99,6 +102,7 @@ var buildConfig = function() {
 
     overrideProps( mergedConfig.options, cliConfig );
     overrideProps( mergedConfig.userOptions, userArgs );
+
     fillArgv( mergedConfig );
 
     // add config to global variable
