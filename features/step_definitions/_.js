@@ -60,7 +60,24 @@ cucumber.defineSupportCode( function( consumer ) {
         return driver.findElements( xpath )
             .then( function( msgs ) {
                 if( msgs.length !== 0 ) {
-                    throw new Error( 'Найдено ' + msgs.length + ' сообщений' );
+                    var message = 'Найдено ' + msgs.length + ' сообщений\n';
+                    var buildFullMessage = function( msgs, i ) {
+                        var msg = msgs[ i ];
+
+                        return msg.getText()
+                            .then( function( text ) {
+                                message += ( ( i + 1 ) + '. ' + text + ';\n' );
+
+                                if( i === msgs.length - 1 ) {
+                                    throw new Error( message );
+                                } else {
+                                    i += 1;
+                                    return buildFullMessage( msgs, i );
+                                }
+                            } );
+                    };
+
+                    return buildFullMessage( msgs, 0 );
                 }
             } );
     } );

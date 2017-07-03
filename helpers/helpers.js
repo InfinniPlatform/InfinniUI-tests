@@ -151,7 +151,6 @@ var replaceInOrder = function() {
     var modifiedStr = args[ 0 ];
 
     for( var i = 1, ii = args.length; i < ii; i += 1 ) {
-        console.log( 'args[ i ]', args[ i ] );
         modifiedStr = modifiedStr.replace( '%s', args[ i ] );
     }
 
