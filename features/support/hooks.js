@@ -29,11 +29,15 @@ cucumber.defineSupportCode( function( consumer ) {
                     } );
                 } )
                 .then( function() {
-                    return clearAndQuit( that.driver );
+                    if( that.config.deleteAllCookiesAndExitAfter ) {
+                        return clearAndQuit( that.driver );
+                    }
                 } );
         }
 
-        return clearAndQuit( this.driver );
+        if( this.config.deleteAllCookiesAndExitAfter ) {
+            return clearAndQuit( this.driver );
+        }
     } );
 
     consumer.Before( function() {

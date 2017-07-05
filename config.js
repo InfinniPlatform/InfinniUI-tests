@@ -19,6 +19,9 @@ module.exports = {
 
     checkLoader: true,
 
+    // Finale action
+    deleteAllCookiesAndExitAfter: true,
+
     // browsers options for webdriver
     browsers: {
         chrome: {
