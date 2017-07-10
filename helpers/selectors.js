@@ -104,7 +104,7 @@ module.exports = {
                 return (this.byName(text) + '{button}' + '|' + this.byLabelText(text) + '{button}').replace(/\{button}/g, '//span[contains(@class, "pl-combobox__grip")]');
             },
             dropDown: function (text) {
-                return '//div[contains(@class, "pl-dropdown-container")]//div[contains(@class, "pl-combobox-items")]/*[normalize-space(node()) = ' + text + ']';
+                return '//div[contains(@class, "pl-dropdown-container")]//div[contains(@class, "pl-combobox-items")]/*[normalize-space(.) = ' + text + ']';
             },
             filter: function () {
                 return '//div[contains(@class, "pl-dropdown-container")]//input[contains(@class, "pl-combobox-filter-text")]';
