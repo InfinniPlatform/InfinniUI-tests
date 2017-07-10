@@ -271,7 +271,7 @@ module.exports = {
              * @returns {string}
              */
             dropDown: function( text ) {
-                return '//div[contains(@class, "pl-dropdown-container")]//div[contains(@class, "pl-combobox-items")]/span[contains(@class, "pl-label") and normalize-space(node()) = ' + text + ']';
+                return '//div[contains(@class, "pl-dropdown-container")]//div[contains(@class, "pl-combobox-items")]/*[normalize-space(.) = ' + text + ']';
             },
 
             /**
