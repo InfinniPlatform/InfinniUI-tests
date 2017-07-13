@@ -150,7 +150,7 @@ cucumber.defineSupportCode( function( consumer ) {
                 return elements[ elementName.index ].getText();
             } )
             .then( function( elementText ) {
-                elementText = elementText.replace( /\n/, '\\n' );
+                elementText = elementText.replace( /\n/g, '\\n' );
 
                 return that.assert.equal( elementText, text );
             } );
