@@ -125,7 +125,6 @@ var format = function( text, args ) {
     } );
 };
 
-
 /**
  *
  * @param string

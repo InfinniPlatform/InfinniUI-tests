@@ -1,6 +1,21 @@
 'use strict';
 
 var cucumber = require( 'cucumber' );
+var helpers = require( '../../helpers/helpers' );
+var insertText = function( input, text, i ) {
+    var index = i || 0;
+    return input.sendKeys( text[ index ] )
+        .then( function() {
+            return helpers.delay( 0 );
+        } )
+        .then( function() {
+            if ( index < text.length -1 ) {
+                index += 1;
+
+                return insertText( input, text, index );
+            }
+        } );
+};
 
 cucumber.defineSupportCode( function( consumer ) {
     var When = consumer.When;
@@ -36,7 +51,7 @@ cucumber.defineSupportCode( function( consumer ) {
                         return input.sendKeys( that.keys.DELETE );
                     } )
                     .then( function() {
-                        return input.sendKeys( value );
+                        return insertText( input, value );
                     } );
             } );
     } );
