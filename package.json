@@ -1,6 +1,6 @@
 {
   "name": "infinni-ui-e2e",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "dependencies": {
     "chai": "^4.0.2",
     "sanitize-filename": "^1.6.1",
