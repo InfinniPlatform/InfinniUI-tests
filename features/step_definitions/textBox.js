@@ -3,6 +3,10 @@
 var cucumber = require( 'cucumber' );
 var helpers = require( '../../helpers/helpers' );
 var insertText = function( input, text, i ) {
+    if( text === '' || typeof text === 'undefined' || text === null ) {
+        return input.sendKeys( '' );
+    }
+
     var index = i || 0;
     return input.sendKeys( text[ index ] )
         .then( function() {
