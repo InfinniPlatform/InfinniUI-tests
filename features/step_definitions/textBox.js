@@ -4,7 +4,7 @@ var cucumber = require( 'cucumber' );
 var helpers = require( '../../helpers/helpers' );
 var insertText = function( input, text, i ) {
     if( text === '' || typeof text === 'undefined' || text === null ) {
-        return input.sendKeys( '' );
+        return input.click();
     }
 
     var index = i || 0;
