@@ -3,11 +3,8 @@
 var cucumber = require( 'cucumber' );
 var helpers = require( '../../helpers/helpers' );
 var insertText = function( input, text, i ) {
-    if( text === '' || typeof text === 'undefined' || text === null ) {
-        return input.click();
-    }
-
     var index = i || 0;
+
     return input.sendKeys( text[ index ] )
         .then( function() {
             return helpers.delay( 0 );
@@ -55,6 +52,13 @@ cucumber.defineSupportCode( function( consumer ) {
                         return input.sendKeys( that.keys.DELETE );
                     } )
                     .then( function() {
+                        if( value === '' || typeof value === 'undefined' || value === null ) {
+                            return input.click()
+                                .then( function() {
+                                    return input.sendKeys( that.keys.HOME );
+                                } );
+                        }
+
                         return insertText( input, value );
                     } );
             } );
