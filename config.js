@@ -10,7 +10,7 @@ module.exports = {
     defaultBrowserName: 'chrome',
 
     // absolute path to screenshots folder
-    screenshotsFolder: path.resolve( __dirname, 'screenshots' ),
+    // screenshotsFolder: path.resolve( __dirname, 'screenshots' ),
 
     screen: {
         width: 1920,
@@ -49,6 +49,7 @@ module.exports = {
         // teamcity: true,
         // width: 'some_width',
         // height: 'some_height',
+        // root: 'path_to_root_dir_with_features'
     },
 
     // all cucumber options goes here

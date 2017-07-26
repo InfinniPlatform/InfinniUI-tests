@@ -75,6 +75,11 @@ var merge = function( source, dest ) {
 var fillArgv = function( mergedConfig ) {
     var options = mergedConfig.options;
     var folders = mergedConfig.folders;
+    var root = mergedConfig.userOptions.root;
+
+    if( root ) {
+        process.argv.push( root );
+    }
 
     for( var key in options ) {
         if( options.hasOwnProperty( key ) ) {
