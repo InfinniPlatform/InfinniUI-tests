@@ -47,6 +47,7 @@ cucumber.defineSupportCode( function( consumer ) {
         var filterXpath = this.by.xpath( filterSelector );
         var dropdownSelector = this.selectors.XPATH.ComboBox.dropDown( value );
         var dropdownXpath = this.by.xpath( dropdownSelector );
+        var blocker = this.by.xpath( this.selectors.XPATH.UIBlocker.name() );
         var that = this;
 
         return this.currentView.findElements( buttonXpath )
