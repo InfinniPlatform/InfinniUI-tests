@@ -60,8 +60,29 @@ cucumber.defineSupportCode( function( consumer ) {
                 return filteredField.sendKeys( filter );
             } )
             .then( function() {
-                // TODO: Индиктор загрузки может блокировать элемент
-                return that.helpers.delay( 1000 );
+                var divider = 2;
+                var totalAttempts = 60 * divider;
+
+                return new Promise( function( resolve, reject ) {
+                    tryContinue( 0, resolve, reject );
+                } );
+
+                function tryContinue( i, resolve, reject ) {
+                    that.driver.findElements( blocker )
+                        .then( function( elements ) {
+                            if( !elements.length ) {
+                                resolve();
+                            } else {
+                                if( i < totalAttempts ) {
+                                    setTimeout( function() {
+                                        tryContinue( i + 1, resolve, reject );
+                                    }, 1000 / divider );
+                                } else {
+                                    reject( 'Блокирование страницы индикатором загрузки более чем на ' + totalAttempts / divider + ' сек.' );
+                                }
+                            }
+                        } );
+                }
             } )
             .then( function() {
                 return that.driver.findElement( dropdownXpath );

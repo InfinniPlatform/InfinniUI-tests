@@ -57,6 +57,7 @@ cucumber.defineSupportCode( function( consumer ) {
             var totalAttempts = 60 * divider;
             var world = process.world;
             var secondTime = false;
+            var blocker = world.by.xpath( world.selectors.XPATH.UIBlocker.name() );
 
             return world.driver.manage().setTimeouts( { implicit: 0 } )
                 .then( function() {
@@ -66,8 +67,6 @@ cucumber.defineSupportCode( function( consumer ) {
                 } );
 
             function tryContinue( i, resolve, reject ) {
-                var blocker = world.by.xpath( world.selectors.XPATH.UIBlocker.name() );
-
                 world.driver.findElements( blocker )
                     .then( function( elements ) {
                         if( !elements.length && secondTime ) {
