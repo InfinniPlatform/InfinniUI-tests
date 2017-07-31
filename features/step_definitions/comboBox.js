@@ -63,6 +63,7 @@ cucumber.defineSupportCode( function( consumer ) {
             .then( function() {
                 var divider = 2;
                 var totalAttempts = 60 * divider;
+                var secondTime = false;
 
                 return new Promise( function( resolve, reject ) {
                     tryContinue( 0, resolve, reject );
@@ -71,9 +72,10 @@ cucumber.defineSupportCode( function( consumer ) {
                 function tryContinue( i, resolve, reject ) {
                     that.driver.findElements( blocker )
                         .then( function( elements ) {
-                            if( !elements.length ) {
+                            if( !elements.length && secondTime ) {
                                 resolve();
                             } else {
+                                secondTime = true;
                                 if( i < totalAttempts ) {
                                     setTimeout( function() {
                                         tryContinue( i + 1, resolve, reject );
