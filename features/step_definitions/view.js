@@ -59,7 +59,11 @@ cucumber.defineSupportCode( function( consumer ) {
 
         return this.driver.findElement( xpath )
             .then( function( messageBox ) {
-                return messageBox.getText();
+                // delay for fadiIn animation of modal window
+                return that.helpers.delay( 150 )
+                    .then( function() {
+                        return messageBox.getText();
+                    } );
             } )
             .then( function( text ) {
                 message = that.helpers.ignoreNumbers( text.trim(), message ).replace( /\\n/g, '\n' );
