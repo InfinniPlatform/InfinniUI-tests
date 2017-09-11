@@ -47,6 +47,7 @@ cucumber.defineSupportCode( function( consumer ) {
         var filterXpath = this.by.xpath( filterSelector );
         var dropdownSelector = this.selectors.XPATH.ComboBox.dropDown( value );
         var dropdownXpath = this.by.xpath( dropdownSelector );
+        var blocker = this.by.xpath( this.selectors.XPATH.UIBlocker.name() );
         var that = this;
 
         return this.currentView.findElements( buttonXpath )
@@ -60,8 +61,31 @@ cucumber.defineSupportCode( function( consumer ) {
                 return filteredField.sendKeys( filter );
             } )
             .then( function() {
-                // TODO: Индиктор загрузки может блокировать элемент
-                return that.helpers.delay( 1000 );
+                var divider = 2;
+                var totalAttempts = 60 * divider;
+                var secondTime = false;
+
+                return new Promise( function( resolve, reject ) {
+                    tryContinue( 0, resolve, reject );
+                } );
+
+                function tryContinue( i, resolve, reject ) {
+                    that.driver.findElements( blocker )
+                        .then( function( elements ) {
+                            if( !elements.length && secondTime ) {
+                                resolve();
+                            } else {
+                                secondTime = true;
+                                if( i < totalAttempts ) {
+                                    setTimeout( function() {
+                                        tryContinue( i + 1, resolve, reject );
+                                    }, 1000 / divider );
+                                } else {
+                                    reject( 'Блокирование страницы индикатором загрузки более чем на ' + totalAttempts / divider + ' сек.' );
+                                }
+                            }
+                        } );
+                }
             } )
             .then( function() {
                 return that.driver.findElement( dropdownXpath );
