@@ -52,40 +52,45 @@ cucumber.defineSupportCode( function( consumer ) {
     } );
 
     if( process.myConfig.checkLoader ) {
-        consumer.registerHandler( 'BeforeStep', function() {
-            var divider = 2;
-            var totalAttempts = 60 * divider;
-            var world = process.world;
-            var secondTime = false;
+        consumer.registerHandler( 'BeforeStep', function( scenarioResult ) {
+            if( scenarioResult.scenario.__failed ) {
+                return;
+            }
 
-            return world.driver.manage().setTimeouts( { implicit: 0 } )
+            var driver = process.world.driver;
+            var blockerXpath = process.world.by.xpath( process.world.selectors.XPATH.UIBlocker.name() );
+            var totalAttempts = 5;
+            var searchAttempt = 0;
+
+            return driver.manage().setTimeouts( { implicit: 0 } )
                 .then( function() {
-                    return new Promise( function( resolve, reject ) {
-                        tryContinue( 0, resolve, reject );
+                    return new Promise( function( resolve ) {
+                        trySearch( resolve );
+                    } );
+                } )
+                .then( function() {
+                    return driver.manage().setTimeouts( {
+                        implicit: process.myConfig.timeouts.main
                     } );
                 } );
 
-            function tryContinue( i, resolve, reject ) {
-                var blocker = world.by.xpath( world.selectors.XPATH.UIBlocker.name() );
-
-                world.driver.findElements( blocker )
-                    .then( function( elements ) {
-                        if( !elements.length && secondTime ) {
-                            return world.driver.manage().setTimeouts( { implicit: world.config.timeouts.main } )
-                                .then( function() {
-                                    resolve();
-                                } );
+            function trySearch( resolve ) {
+                if( searchAttempt === totalAttempts ) {
+                    console.error( 'UIBlocker is present after ' + totalAttempts + 's' );
+                    scenarioResult.scenario.__failed = true;
+                    resolve();
+                } else {
+                    searchAttempt++;
+                    driver.findElements( blockerXpath ).then( function( elements ) {
+                        if( !elements.length ) {
+                            resolve();
                         } else {
-                            secondTime = true;
-                            if( i < totalAttempts ) {
-                                setTimeout( function() {
-                                    tryContinue( i + 1, resolve, reject );
-                                }, 1000 / divider );
-                            } else {
-                                reject( 'Блокирование страницы индикатором загрузки более чем на ' + totalAttempts / divider + ' сек.' );
-                            }
+                            setTimeout( function() {
+                                trySearch( resolve );
+                            }, 1000 );
                         }
                     } );
+                }
             }
         } );
     }
