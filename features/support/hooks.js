@@ -59,7 +59,7 @@ cucumber.defineSupportCode( function( consumer ) {
 
             var driver = process.world.driver;
             var blockerXpath = process.world.by.xpath( process.world.selectors.XPATH.UIBlocker.name() );
-            var totalAttempts = 5;
+            var totalAttempts = 30;
             var searchAttempt = 0;
 
             return driver.manage().setTimeouts( { implicit: 0 } )
