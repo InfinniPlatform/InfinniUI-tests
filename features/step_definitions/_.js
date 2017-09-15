@@ -1,6 +1,8 @@
 'use strict';
 
 var cucumber = require( 'cucumber' );
+var path = require( 'path' );
+var fs = require( 'fs' );
 
 cucumber.defineSupportCode( function( consumer ) {
     var When = consumer.When;
@@ -194,6 +196,29 @@ cucumber.defineSupportCode( function( consumer ) {
 
     When( /^выполнится задержка на "([^"]*)" секунд$/, function( time ) {
         return this.helpers.delay( parseInt( time, 10 ) * 1000 );
+    } );
+
+    When( /^я сделаю снимок текущего экрана "([^"]*)"$/, function( fileName ) {
+        var folderPath = this.config.manualScreenshotsFolder;
+
+        if( typeof folderPath === 'undefined' ) {
+            throw new Error( 'Set "manualScreenshotsFolder" in config.js' );
+        }
+
+        return this.driver.takeScreenshot().then( function( data ) {
+            var base64Data = data.replace( /^data:image\/png;base64,/, '' );
+            var filePath = path.resolve( folderPath, fileName.replace( / /g, '_' ) + '.png' );
+
+            return new Promise( function( resolve, reject ) {
+                fs.writeFile( filePath, base64Data, 'base64', function( err ) {
+                    if( err ) {
+                        return reject( err );
+                    }
+
+                    resolve();
+                } );
+            } );
+        } );
     } );
 
 } );

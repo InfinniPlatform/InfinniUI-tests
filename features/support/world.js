@@ -35,7 +35,8 @@ cucumber.defineSupportCode( function( consumer ) {
  * @constructor
  */
 var CustomWorld = function( consumer ) {
-    var screenshotPath = config.screenshotsFolder;
+    var screenshotsPath = config.screenshotsFolder;
+    var manualScreenshotsPath = config.manualScreenshotsFolder;
 
     this.attach = consumer.attach;
     this.parametrs = consumer.parametrs;
@@ -61,9 +62,8 @@ var CustomWorld = function( consumer ) {
         this.driver.manage().window().setSize( width, height );
     }
 
-    if( typeof screenshotPath !== 'undefined' && !fs.existsSync( screenshotPath ) ) {
-        fs.mkdirSync( screenshotPath );
-    }
+    tryCreateFolder( screenshotsPath );
+    tryCreateFolder( manualScreenshotsPath );
 
     process.world = this;
 };
@@ -150,4 +150,10 @@ var createBrowserConfig = function( name, config ) {
     }
 
     return options;
+};
+
+var tryCreateFolder = function( path ) {
+    if( typeof path !== 'undefined' && !fs.existsSync( path ) ) {
+        fs.mkdirSync( path );
+    }
 };

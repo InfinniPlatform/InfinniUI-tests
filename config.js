@@ -12,6 +12,9 @@ module.exports = {
     // absolute path to screenshots folder
     // screenshotsFolder: path.resolve( __dirname, 'screenshots' ),
 
+    // absolute path to manual screenshots folder
+    // manualScreenshotsFolder: path.resolve( __dirname, 'screenshots/manual' ),
+
     screen: {
         width: 1920,
         height: 1080
