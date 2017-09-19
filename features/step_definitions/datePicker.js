@@ -9,7 +9,7 @@ var insertDate = function( input, date, i ) {
             return helpers.delay( 0 );
         } )
         .then( function() {
-            if ( index < date.length -1 ) {
+            if( index < date.length - 1 ) {
                 index += 1;
 
                 return insertDate( input, date, index );
@@ -27,7 +27,11 @@ cucumber.defineSupportCode( function( consumer ) {
         var xpath = this.by.xpath( selector );
         var that = this;
 
-        date = this.helpers.parseDate( date ).split( '.' );
+        if( this.helpers.isDate( date ) ) {
+            date = this.helpers.parseDate( date ).split( '.' );
+        } else if( this.helpers.isTime( date ) ) {
+            date = date.split( ':' );
+        }
 
         return this.currentView.findElements( xpath )
             .then( function( labels ) {
@@ -65,7 +69,9 @@ cucumber.defineSupportCode( function( consumer ) {
         var xpath = this.by.xpath( selector );
         var that = this;
 
-        date = this.helpers.parseDate( date );
+        if( this.helpers.isDate( date ) ) {
+            date = this.helpers.parseDate( date );
+        }
 
         return this.currentView.findElements( xpath )
             .then( function( labels ) {

@@ -249,6 +249,26 @@ var delay = function( time ) {
     } );
 };
 
+/**
+ * @description check date string
+ * @param dateString
+ * @returns {boolean}
+ */
+var isDate = function( dateString ) {
+    return /^\d{2}.\d{2}.\d{4}$/.test( dateString )
+        || /^Сегодня/.test( dateString );
+};
+
+/**
+ * @description check time string
+ * @param timeString
+ * @returns {boolean}
+ */
+var isTime = function( timeString ) {
+    return /^\d{1,2}:\d{2}:\d{2}$/.test( timeString )
+        || /^\d{1,2}:\d{2}$/.test( timeString );
+};
+
 module.exports = {
     parseElement: parseElement,
     parseDate: parseDate,
@@ -265,5 +285,7 @@ module.exports = {
     fixStepResult: fixStepResult,
     log: log,
     logError: logError,
-    delay: delay
+    delay: delay,
+    isDate: isDate,
+    isTime: isTime
 };
