@@ -619,7 +619,15 @@ module.exports = {
              * @returns {string}
              */
             byLabelText: function( text ) {
-                return './/div[contains(@class, "pl-file-box")]//label[@class = "pl-control-label" and normalize-space(node()) = "' + text + '"]/../..';
+                return './/div[contains(@class, "pl-file-box") and .//label[@class = "pl-control-label" and normalize-space(node()) = "' + text + '"]]';
+            },
+
+            /**
+             *
+             * @returns {string}
+             */
+            inputField: function() {
+                return './/input[@type = "file"]';
             },
 
             /**

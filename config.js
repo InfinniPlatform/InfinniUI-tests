@@ -12,6 +12,9 @@ module.exports = {
     // absolute path to screenshots folder
     // screenshotsFolder: path.resolve( __dirname, 'screenshots' ),
 
+    // absolute path to folder with files to upload
+    // filesToUploadFolder: path.resolve( __dirname, 'filesToUpload' ),
+
     // absolute path to manual screenshots folder
     // manualScreenshotsFolder: path.resolve( __dirname, 'screenshots/manual' ),
 
