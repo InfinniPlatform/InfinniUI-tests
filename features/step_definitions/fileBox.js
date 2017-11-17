@@ -13,6 +13,7 @@ cucumber.defineSupportCode( function( consumer ) {
         var fileBoxInputSelector = this.selectors.XPATH.FileBox.inputField();
         var fileBoxInputXpath = this.by.xpath( fileBoxInputSelector );
         var pathToFolderWithFiles = this.config.filesToUploadFolder;
+        var that = this;
 
         return this.driver.findElements( fileBoxXpath )
             .then( function( fileBoxes ) {
@@ -21,6 +22,14 @@ cucumber.defineSupportCode( function( consumer ) {
                 }
 
                 return fileBoxes[ parsedFileBoxLabel.index ].findElement( fileBoxInputXpath );
+            } )
+            .then( function( fileBoxInput ) {
+                if( ( that.config.userOptions.browser || that.config.defaultBrowserName ) === 'firefox' ) {
+                    // need only for firefox browser, because it doesn't see hidden input[type='file']
+                    return that.driver.executeScript( 'arguments[ 0 ].classList.remove( "hidden" ); return arguments[ 0 ];', fileBoxInput );
+                }
+
+                return fileBoxInput;
             } )
             .then( function( fileBoxInput ) {
                 if( !pathToFolderWithFiles ) {
