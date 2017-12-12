@@ -4,6 +4,7 @@ var fs = require( 'fs' );
 var path = require( 'path' );
 var cucumber = require( 'cucumber' );
 var sanitize = require( 'sanitize-filename' );
+var command = require('selenium-webdriver/lib/command');
 
 cucumber.defineSupportCode( function( consumer ) {
 
@@ -42,12 +43,18 @@ cucumber.defineSupportCode( function( consumer ) {
 
     consumer.Before( function() {
         var that = this;
+        var config = this.config;
 
-        return this.driver.get( process.myConfig.userOptions.host )
+        return this.driver.get( config.userOptions.host )
             .then( function() {
                 return that.driver.manage().setTimeouts( {
-                    implicit: that.config.timeouts.main
+                    implicit: config.timeouts.main
                 } );
+            } )
+            .then( function() {
+                if( that.currentBrowser === 'chrome' && ~config.browsers.chrome.addArguments.indexOf( '--headless' ) ) {
+                    return enableDownloadInHeadlessChrome( that.driver, process.downloadDir );
+                }
             } );
     } );
 
@@ -102,4 +109,19 @@ var clearAndQuit = function( driver ) {
         .then( function() {
             return driver.quit();
         } );
+};
+
+var enableDownloadInHeadlessChrome = function( driver, downloadDir ) {
+    // add missing support for chrome "send_command"  to selenium webdriver
+    driver.getExecutor().defineCommand( 'send_command', 'POST', '/session/:sessionId/chromium/send_command' );
+
+    var params = {
+        'cmd': 'Page.setDownloadBehavior',
+        'params': {
+            'behavior': 'allow',
+            'downloadPath': downloadDir
+        }
+    };
+
+    return driver.schedule( new command.Command( 'send_command' ).setParameters( params ), 'send_command' );
 };
