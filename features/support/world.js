@@ -43,7 +43,8 @@ var CustomWorld = function( consumer ) {
 
     this.config = config;
     this.webdriver = webdriver;
-    this.driver = buildDriver( config.userOptions.browser || config.defaultBrowserName, config );
+    this.currentBrowser = config.userOptions.browser || config.defaultBrowserName;
+    this.driver = buildDriver( this.currentBrowser, config );
     this.by = webdriver.By;
     this.selectors = selectors;
     this.helpers = helpers;
