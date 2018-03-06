@@ -151,4 +151,37 @@ cucumber.defineSupportCode( function( consumer ) {
             } );
     } );
 
+    When( /^я не увижу в выпадающем списке "([^"]*)" значение "([^"]*)"$/, function( comboBoxLabel, value ) {
+        // @TODO: Давно уже пора провести рефакторинг, но ни у кого нет времени. Это ужас просто!
+        comboBoxLabel = this.helpers.parseElement( comboBoxLabel );
+        comboBoxLabel.name = this.helpers.fixQuotes( comboBoxLabel.name );
+        value = this.helpers.fixQuotes( value );
+
+        var buttonSelector = this.selectors.XPATH.ComboBox.button( comboBoxLabel.name );
+        var buttonXpath = this.by.xpath( buttonSelector );
+        var dropdownSelector = this.selectors.XPATH.ComboBox.dropDown( value );
+        var dropdownXpath = this.by.xpath( dropdownSelector );
+        var that = this;
+
+        var dropDownItemsResult;
+
+        return this.currentView.findElements( buttonXpath )
+            .then( function( elements ) {
+                return elements[ comboBoxLabel.index ].click();
+            } )
+            .then( function() {
+                return that.driver.findElements( dropdownXpath );
+            } )
+            .then( function( dropdownItems ) {
+                dropDownItemsResult = dropdownItems;
+                // Close drop down (fast method)
+                return that.driver.executeScript( '$(".backdrop").click()' );
+            } )
+            .then( function() {
+                if( dropDownItemsResult.length > 0 ) {
+                    throw new Error( 'DropDown items with text "' + value + ' exists."' );
+                }
+            } );
+    } );
+
 } );
